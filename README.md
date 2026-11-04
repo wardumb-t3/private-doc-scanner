@@ -1,6 +1,6 @@
 # Private Doc Scanner
 
-**Open-source document scanner for AI: reads your passport, payslip or bank statement on your own phone and saves it to your own hardware sealed vault, so your AI can use it without seeing it.**
+**Open-source document scanner for AI: reads your passport, payslip or bank statement on your own device and saves it to your own hardware sealed vault, so your AI can use it without seeing it.**
 
 ![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue) ![works with Claude Code](https://img.shields.io/badge/works%20with-Claude%20Code-555) ![works with Codex](https://img.shields.io/badge/works%20with-Codex-555) ![runs on device](https://img.shields.io/badge/reads%20documents-on%20device-0f6e63)
 
