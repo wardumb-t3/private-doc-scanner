@@ -76,7 +76,7 @@ No. The file is read into memory on your device and never uploaded. Only the det
 ### Do I need an account to try it?
 Scanning and reviewing works without one. But to save data to your Terminal 3 vault, sign in with your email and a code at "Seal and send" or to connect an AI assistant, you would need a Terminal 3 account and a developer API key from the [Agent Developer Kit sign-up](https://terminal3.io/products/agent-developer-kit). ALl new accounts come with free credits pre-funded.
 
-## What it checks
+## What it checks (you can build your own scripts to run in your Terminal 3 vaults)
 
 | Check | Where it applies |
 |---|---|
@@ -87,9 +87,9 @@ Scanning and reviewing works without one. But to save data to your Terminal 3 va
 
 A field is marked verified only by a deterministic check like these. The benchmark fails CI if any verified field is wrong.
 
-## Guarantees (and how they are enforced)
+## Safety and security features (everything is open-sourced and verifiable, it is your responsibility to check through and ensure it is safe enough for your use)
 
-| Promise | Enforced by |
+| Enforced by |
 |---|---|
 | The document never leaves the device | Files are read into memory from the picker or camera and never uploaded. CSP `connect-src 'self' <destination>`. e2e test: no request body or URL contains document values. |
 | Only reviewed fields leave, encrypted | `pde.submission/v1` carries values plus provenance only: no images, page text or file names. Sealed by `@terminal3/t3n-sdk` (ML-KEM session) or HPKE (RFC 9180). e2e test decrypts it. |
