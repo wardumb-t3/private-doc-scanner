@@ -59,22 +59,22 @@ For Codex, use the same prompt and save the memory section to `~/.codex/AGENTS.m
 ## FAQ
 
 ### How do I use my passport, payslip or bank statement with AI without uploading it?
-Scan it here instead of attaching it to a chat. It's read on your device, you review the details, and only those are sealed to your T3N vault. Your AI then asks the vault questions and gets yes-or-no answers.
+Scan it here instead of attaching it to a chat. It's read on your device, you review the details, and only those are sealed to your T3N vault. You can then build workflows where your AI can request to be run with these data, without it actually seeing or touching the data. 
 
 ### Is it safe to paste my documents into ChatGPT or Claude?
-Anything you attach or paste goes to the model provider. If the document is private, keep it out of the chat: scan it here and let the AI work with the vault instead.
+Anything you attach or paste goes to the model provider. If the document is private, keep it out of the chat: scan it here and let the AI work with your vault instead.
 
 ### How can an AI agent check my income or ID without seeing it?
-The vault runs checks inside a secure enclave (Intel TDX) on T3N, such as "net pay at least 3,000", "document not expired" or "nationality is one of …", and returns pass or fail plus which fields were verified on the document. Values are never returned.
+You can write workflows and scripts for the vault to run inside a secure enclave (Intel TDX) on Terminal 3 Network, such as "net pay at least 3,000", "document not expired" or "nationality is one of …", and returns pass or fail plus which fields were verified on the document. Raw values are never returned.
 
 ### Where should I keep API keys and secrets for an app I'm building with AI?
 In your tool's secret settings or a git-ignored `.env`, never in a chat. The setup prompt above follows that rule and tells your assistant to keep following it.
 
 ### Does my document ever leave my device?
-No. The file is read into memory on your device and never uploaded. Only the details you confirm leave, encrypted to a T3N enclave whose hardware attestation is verified first. "What left this device" lists every request the page made.
+No. The file is read into memory on your device and never uploaded. Only the details you confirm leave, encrypted to a T3N enclave whose hardware attestation is verified first. "What left this device" shows every request the page made. The scanner code is open-sourced and available for you to verify.
 
 ### Do I need an account to try it?
-No. Scanning and reviewing work without one. To save a scan to your vault, sign in with your email and a code at "Seal and send". To connect an AI assistant, you also need a developer API key from the [Agent Developer Kit sign-up](https://terminal3.io/products/agent-developer-kit).
+Scanning and reviewing works without one. But to save data to your Terminal 3 vault, sign in with your email and a code at "Seal and send" or to connect an AI assistant, you would need a Terminal 3 account and a developer API key from the [Agent Developer Kit sign-up](https://terminal3.io/products/agent-developer-kit). ALl new accounts come with free credits pre-funded.
 
 ## What it checks
 
