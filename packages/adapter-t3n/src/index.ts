@@ -1,4 +1,4 @@
-import { SignInError, type Destination, type DestinationInfo, type Submission, type SubmitReceipt } from "@pde/core";
+import { NoDeveloperAccountError, SignInError, type Destination, type DestinationInfo, type Submission, type SubmitReceipt } from "@pde/core";
 import type * as T3n from "@terminal3/t3n-sdk";
 
 type Sdk = typeof T3n;
@@ -34,9 +34,11 @@ export interface T3nDestinationOptions {
   target: T3nTarget;
   /**
    * Authenticate the end user on the (already attested and encrypted)
-   * session — e.g. email OTP via `sdk.createEmailOtpAuthInput`.
+   * session — e.g. email OTP via `sdk.createEmailOtpAuthInput`. Return the
+   * DID `client.authenticate` gives back, so the signed-in account is known
+   * even when the client doesn't report it afterwards.
    */
-  authenticate: (client: T3n.T3nClient, sdk: Sdk) => Promise<void>;
+  authenticate: (client: T3n.T3nClient, sdk: Sdk) => Promise<void | { value: string }>;
   /**
    * Guest-to-host handlers for the client, e.g. `{ EthSign: sdk.metamask_sign(address) }`
    * for wallet sign-in. Called once, before the client is created.
@@ -50,6 +52,12 @@ export interface T3nDestinationOptions {
    * (e.g. against a SHA-256 built into the page).
    */
   vault?: { maps: string[]; load: () => Promise<{ wasm: Uint8Array; version: string }> };
+  /**
+   * After sign-in, require a Terminal 3 developer account (an admitted,
+   * active tenant, as created by the Agent Developer Kit sign-up). An email
+   * that has only ever signed in here isn't one, so it can't hold a vault.
+   */
+  requireDeveloperAccount?: boolean;
 }
 
 /**
@@ -63,6 +71,8 @@ export class T3nDestination implements Destination {
   private readonly opts: T3nDestinationOptions;
   private client: T3n.T3nClient | null = null;
   private sdk: Sdk | null = null;
+  /** DID from sign-in (or from a resumed session's handshake). */
+  private signedInDid: string | null = null;
 
   constructor(opts: T3nDestinationOptions) {
     this.opts = opts;
@@ -82,7 +92,7 @@ export class T3nDestination implements Destination {
 
   /** DID of the signed-in session (after `prepare`). */
   get did(): string | null {
-    return this.client?.getDid()?.value ?? null;
+    return this.client?.getDid()?.value ?? this.signedInDid;
   }
 
   /** Where this destination sends traffic: the node, or a same-origin relay path to it. */
@@ -102,7 +112,7 @@ export class T3nDestination implements Destination {
   ownContractId(tail: string): string {
     const client = this.client;
     const sdk = this.sdk;
-    const did = client?.getDid()?.value;
+    const did = this.did;
     if (!client || !sdk || !did) throw new Error("not signed in to T3");
     return new sdk.TenantClient({ t3n: client, baseUrl: this.opts.baseUrl, tenantDid: did }).canonicalName(tail);
   }
@@ -127,7 +137,7 @@ export class T3nDestination implements Destination {
     const vault = this.opts.vault;
     const client = this.client;
     const sdk = this.sdk;
-    const did = client?.getDid()?.value;
+    const did = this.did;
     if (target.kind !== "own-contract" || !vault) throw new Error("this destination has nothing to set up");
     if (!client || !sdk || !did) throw new Error("not signed in to T3");
     onStep?.("checking the vault contract");
@@ -148,6 +158,35 @@ export class T3nDestination implements Destination {
     }
   }
 
+  /** Throws NoDeveloperAccountError unless the signed-in DID is an active Terminal 3 developer account. */
+  private async checkDeveloperAccount(): Promise<void> {
+    const client = this.client;
+    const sdk = this.sdk;
+    const did = this.did;
+    if (!client || !sdk || !did) throw new SignInError("not signed in to T3");
+    let me: { status?: string } | null;
+    try {
+      me = (await new sdk.TenantClient({ t3n: client, baseUrl: this.opts.baseUrl, tenantDid: did }).tenant.me()) as { status?: string } | null;
+    } catch (err) {
+      const msg = String((err as Error)?.message ?? err);
+      if (/not.?found|not.?admitted|unknown tenant|not a tenant|no tenant|not registered/i.test(msg)) {
+        this.client = null;
+        throw new NoDeveloperAccountError("none", { cause: err });
+      }
+      // Any other failure says nothing about the account: don't block on it.
+      console.warn("[t3] couldn't check the developer account:", msg);
+      return;
+    }
+    if (!me) {
+      this.client = null;
+      throw new NoDeveloperAccountError("none");
+    }
+    if (me.status && me.status !== "active") {
+      this.client = null;
+      throw new NoDeveloperAccountError(me.status);
+    }
+  }
+
   async prepare(): Promise<void> {
     const sdk = (this.sdk ??= await (this.opts.loadSdk ?? (() => import("@terminal3/t3n-sdk")))());
     // Signed by the network operator, verified against a key pinned in the SDK.
@@ -165,13 +204,18 @@ export class T3nDestination implements Destination {
     // A browser that still holds a t3_session cookie resumes that signed-in
     // session at handshake; the SDK then refuses a second sign-in ("Must
     // complete handshake before authentication"). Use the resumed session.
+    this.signedInDid = hs.did?.value ?? null;
     try {
-      if (!hs.authenticated && !client.isAuthenticated()) await this.opts.authenticate(client, sdk);
+      if (!hs.authenticated && !client.isAuthenticated()) {
+        const did = await this.opts.authenticate(client, sdk);
+        if (did?.value) this.signedInDid = did.value;
+      }
     } catch (err) {
       throw new SignInError((err as Error).message ?? String(err), { cause: err });
     }
     if (!client.isAuthenticated()) throw new SignInError("not signed in to T3");
     this.client = client;
+    if (this.opts.requireDeveloperAccount) await this.checkDeveloperAccount();
   }
 
   async submit(submission: Submission): Promise<SubmitReceipt> {

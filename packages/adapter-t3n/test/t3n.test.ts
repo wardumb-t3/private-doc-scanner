@@ -20,7 +20,9 @@ const submission: Submission = {
   created_at: "2025-01-01T00:00:00.000Z",
 };
 
-function fakeSdk(opts: { handshakeFails?: boolean; unsafe?: boolean; resumed?: boolean; noContract?: boolean; existingMaps?: string[] } = {}) {
+function fakeSdk(
+  opts: { handshakeFails?: boolean; unsafe?: boolean; resumed?: boolean; noContract?: boolean; existingMaps?: string[]; tenantMe?: () => Promise<unknown> } = {},
+) {
   const calls: Record<string, unknown[]> = {};
   const record = (k: string, v: unknown) => ((calls[k] ??= []).push(v), v);
   class T3nClient {
@@ -65,6 +67,7 @@ function fakeSdk(opts: { handshakeFails?: boolean; unsafe?: boolean; resumed?: b
         return { name: this.canonicalName(input.tail), contract_id: 77 };
       },
     };
+    tenant = { me: async () => (opts.tenantMe ? opts.tenantMe() : { status: "active" }) };
     maps = {
       create: async (input: { tail: string }) => {
         if (opts.existingMaps?.includes(input.tail)) throw new Error("MapAlreadyExists");
@@ -255,5 +258,68 @@ describe("T3 destination: the signed-in user's own vault", () => {
 
   it("shortens long DIDs for display", () => {
     expect(shortDid("did:t3n:0123456789abcdef0123")).toBe("did:t3n:012345…0123");
+  });
+});
+
+describe("T3 destination: knowing who signed in", () => {
+  it("uses the DID sign-in returns when the client doesn't report one (as after an email sign-in)", async () => {
+    const { sdk, calls } = fakeSdk();
+    // A client whose getDid() stays empty after authenticating.
+    const Base = (sdk as { T3nClient: new (c: unknown) => { getDid(): unknown } }).T3nClient;
+    (sdk as { T3nClient: unknown }).T3nClient = class extends Base {
+      override getDid() {
+        return null;
+      }
+    };
+    const dest = new T3nDestination({
+      baseUrl: "https://node.example",
+      environment: "testnet",
+      target: { kind: "own-contract", tail: "doc-intake", functionName: "ingest" },
+      authenticate: (async (client: { authed: boolean }) => {
+        client.authed = true;
+        return { value: "did:t3n:fromsignin" };
+      }) as never,
+      loadSdk: async () => sdk,
+    });
+    await dest.prepare();
+    expect(dest.describe().account).toBe("did:t3n:fromsignin");
+    await dest.submit(submission);
+    expect((calls.execute as { contract_id: string }[])[0]!.contract_id).toBe("z:fromsignin:doc-intake");
+  });
+});
+
+describe("T3 destination: a Terminal 3 developer account is required for a vault", () => {
+  const dest = (tenantMe: () => Promise<unknown>) =>
+    new T3nDestination({
+      baseUrl: "https://node.example",
+      environment: "testnet",
+      target: { kind: "own-contract", tail: "doc-intake", functionName: "ingest" },
+      requireDeveloperAccount: true,
+      authenticate: auth as never,
+      loadSdk: async () => fakeSdk({ tenantMe }).sdk,
+    });
+
+  it("refuses an email that isn't a developer account, before anything is set up or sent", async () => {
+    const d = dest(async () => {
+      throw new Error("tenant not found");
+    });
+    await expect(d.prepare()).rejects.toMatchObject({ name: "NoDeveloperAccountError", status: "none" });
+    await expect(d.submit(submission)).rejects.toThrow("destination not verified");
+  });
+
+  it("refuses an account that isn't active yet", async () => {
+    await expect(dest(async () => ({ status: "pending" })).prepare()).rejects.toMatchObject({ name: "NoDeveloperAccountError", status: "pending" });
+  });
+
+  it("accepts an active developer account", async () => {
+    await expect(dest(async () => ({ status: "active", tenant: "abc" })).prepare()).resolves.toBeUndefined();
+  });
+
+  it("doesn't block on an unrelated failure of the check", async () => {
+    await expect(
+      dest(async () => {
+        throw new Error("network timeout");
+      }).prepare(),
+    ).resolves.toBeUndefined();
   });
 });

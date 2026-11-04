@@ -46,6 +46,21 @@ export interface SubmitReceipt {
  * user could not be signed in (wrong one-time code, cancelled, rate limited).
  * The UI offers a retry; anything else is treated as a failed verification.
  */
+export class NoDeveloperAccountError extends Error {
+  /** "none": not a Terminal 3 developer account; otherwise the account's status (e.g. "pending"). */
+  readonly status: string;
+  constructor(status: string, options?: { cause?: unknown }) {
+    super(status === "none" ? "this email isn't linked to a Terminal 3 developer account" : `this Terminal 3 account is ${status}`, options);
+    this.name = "NoDeveloperAccountError";
+    this.status = status;
+  }
+}
+
+/**
+ * Thrown by `Destination.prepare()` when sign-in worked but the account is
+ * not a Terminal 3 developer account (or not active yet), so it can't hold
+ * a vault. The UI asks the user to sign up first; nothing is sent.
+ */
 export class SignInError extends Error {
   constructor(message: string, options?: { cause?: unknown }) {
     super(message, options);

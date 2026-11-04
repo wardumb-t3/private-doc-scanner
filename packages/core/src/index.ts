@@ -14,5 +14,5 @@ export { cropImage, downscaleImage, wipeImage, enhanceContrast } from "./image.t
 export { rowTexts, sortReadingOrder, sameRow, rotatedBounds, dominantAngle, deskewLines, type RowText } from "./layout.ts";
 export { SCHEMAS, getSchema, type DocumentSchema, type FieldSpec } from "./schemas/index.ts";
 export type { Destination, DestinationInfo, SubmitReceipt } from "./destination.ts";
-export { SignInError } from "./destination.ts";
+export { NoDeveloperAccountError, SignInError } from "./destination.ts";
 export { assessQuality, DEFAULT_QUALITY, type QualityThresholds } from "./quality.ts";

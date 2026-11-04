@@ -175,6 +175,11 @@ test("HPKE destination: the recipient decrypts exactly the reviewed fields; the 
   expect(JSON.stringify(submission)).not.toMatch(/bbox|previews|payslip\.pdf/);
 });
 
+test("the footer says which mode this deployment runs in", async ({ page }) => {
+  await page.goto("./");
+  await expect(flow(page).getByTestId("mode")).toHaveText("demo mode: nothing is sent");
+});
+
 test("opened without ?req=: a reference is generated, sent as the request id and shown to pass on", async ({ page }) => {
   const hpke = await hpkeRecipient(page);
   await page.goto("./");
@@ -228,4 +233,25 @@ test("the vault contract served to the app matches its pinned SHA-256", async ({
   const res = await request.get(`./vault/${manifest.file}`);
   expect(res.ok()).toBe(true);
   expect(createHash("sha256").update(await res.body()).digest("hex")).toBe(manifest.sha256);
+});
+
+test("without a Terminal 3 account: blocked at sealing with a sign-up link, then Try again", async ({ page }) => {
+  await page.route("**/pde.config.json", (route) =>
+    route.fulfill({ json: { destination: { type: "dry-run", simulateNoDeveloperAccount: true }, defaultDocTypes: ["payslip"], repoUrl: "https://example.invalid/repo" } }),
+  );
+  await page.goto("./?req=req_no_account&types=payslip");
+  await choose(page, "payslip");
+  await readPayslip(page);
+  await flow(page).getByTestId("review-continue").click();
+  await flow(page).getByTestId("to-seal").click();
+  const needed = flow(page).getByTestId("account-needed");
+  await expect(needed).toContainText("Sign up for a Terminal 3 account first.");
+  await expect(needed.getByTestId("sign-up")).toHaveAttribute("href", "https://terminal3.io/products/agent-developer-kit");
+  await expect(flow(page).locator("pde-seal-confirm").getByRole("alert")).toContainText("isn't linked to a Terminal 3 account yet");
+  await expect(flow(page).getByTestId("seal")).toBeDisabled();
+  // After signing up, Try again signs in afresh and sealing works.
+  await flow(page).getByTestId("retry").click();
+  await expect(needed).toHaveCount(0);
+  await flow(page).getByTestId("seal").click();
+  await expect(flow(page).getByTestId("done")).toBeVisible();
 });

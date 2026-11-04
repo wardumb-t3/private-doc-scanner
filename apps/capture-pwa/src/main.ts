@@ -4,6 +4,7 @@ import { assetsCached, assetsForTier, createWebEngines, detectCapabilities, type
 import { NetworkMonitor, type Extractor, type PdeFlow } from "@pde/ui";
 import "@pde/ui";
 import { createDestination, type DestinationConfig } from "./destinations.ts";
+import { SIGN_UP_URL } from "./otp-dialog.ts";
 // Bundled (not copied) so it is compiled for the same browsers as the app
 // (even pdf.js's "legacy" worker uses syntax Safari 15 cannot parse) and
 // gets the stream polyfill Safari / iOS need.
@@ -90,6 +91,13 @@ async function ensureCurrentBuild(): Promise<boolean> {
   return false;
 }
 
+/** Shown in the footer, so anyone can see which configuration this deployment runs. */
+function modeLabel(d: DestinationConfig): string {
+  if (d.type === "dry-run") return "demo mode: nothing is sent";
+  if (d.type === "hpke") return "sends to the requester's key";
+  return d.target.kind === "own-contract" ? "saves to your own vault" : d.target.kind === "contract" ? "saves to a shared contract" : "saves to your T3N profile";
+}
+
 async function boot() {
   if (!(await ensureCurrentBuild())) return;
   const [config, manifest] = await Promise.all([getJson<AppConfig>("./pde.config.json"), getJson<ModelManifest>("./models/manifest.json")]);
@@ -149,6 +157,11 @@ async function boot() {
     extractor,
     monitor,
     build: { version: __PDE_BUILD__.version, sha: __PDE_BUILD__.sha, repoUrl: config.repoUrl },
+    modeLabel: modeLabel(config.destination),
+    // Sealing needs a Terminal 3 account; demo mode doesn't (unless it's simulating that check).
+    ...(config.destination.type === "t3n" || (config.destination.type === "dry-run" && config.destination.simulateNoDeveloperAccount)
+      ? { signUpUrl: SIGN_UP_URL }
+      : {}),
     handoffUrl: handoff.href,
     destinationName: config.destination.type === "t3n" ? "your T3 enclave" : "the requester's secure enclave",
   };

@@ -40,7 +40,10 @@ export function chooseSignIn(allowed: SignInMethod[], walletAvailable: boolean):
     dialog.showModal();
   });
 }
-function ask(title: string, label: string, type: "email" | "text", autocomplete: AutoFill): Promise<string> {
+/** Where people create a Terminal 3 developer account (DID, API key, free test credits). */
+export const SIGN_UP_URL = "https://terminal3.io/products/agent-developer-kit";
+
+function ask(title: string, label: string, type: "email" | "text", autocomplete: AutoFill, note?: () => Node): Promise<string> {
   return new Promise((resolve, reject) => {
     const dialog = document.createElement("dialog");
     dialog.style.cssText = "max-width:420px;width:calc(100% - 32px);border-radius:12px;border:1px solid #ccc;padding:20px;font:16px system-ui";
@@ -68,6 +71,7 @@ function ask(title: string, label: string, type: "email" | "text", autocomplete:
     cancel.formNoValidate = true;
     cancel.style.cssText = "padding:10px 16px;font-size:16px;margin-left:8px";
     form.append(h, l, input, ok, cancel);
+    if (note) form.append(note());
     dialog.append(form);
     document.body.append(dialog);
     dialog.addEventListener("close", () => {
@@ -81,5 +85,37 @@ function ask(title: string, label: string, type: "email" | "text", autocomplete:
   });
 }
 
-export const askEmail = () => ask("Sign in to T3", "Your email — we'll send a one-time code", "email", "email");
-export const askOtpCode = () => ask("Check your email", "Enter the code from the newest email we sent you", "text", "one-time-code");
+/** A short paragraph with the sign-up link, shown under a sign-in field. */
+function note(before: string, after: string): () => Node {
+  return () => {
+    const p = document.createElement("p");
+    p.style.cssText = "margin:16px 0 0;font-size:14px;line-height:1.45";
+    const a = document.createElement("a");
+    a.href = SIGN_UP_URL;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "Sign up free";
+    p.append(before, a, after);
+    return p;
+  };
+}
+
+export const askEmail = () =>
+  ask(
+    "Sign in to your Terminal 3 account",
+    "Your Terminal 3 account email — we'll send a one-time code",
+    "email",
+    "email",
+    note("You need a Terminal 3 account to seal your documents. No account yet? ", " (with test credits) first, then use that email here."),
+  );
+export const askOtpCode = () =>
+  ask(
+    "Check your email",
+    "Enter the code from the newest email we sent you",
+    "text",
+    "one-time-code",
+    note(
+      "If this email isn't a Terminal 3 account, the code won't let you seal: you'll be stopped before anything is sent. ",
+      " with this email, then try again.",
+    ),
+  );

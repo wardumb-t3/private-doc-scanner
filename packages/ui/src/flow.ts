@@ -35,6 +35,10 @@ export interface FlowConfig {
   extractor: Extractor;
   monitor: NetworkMonitor;
   build: { version: string; sha: string; repoUrl: string };
+  /** Where sealed data goes, in a few words for the footer (e.g. "saves to your own vault"). */
+  modeLabel?: string;
+  /** Where to create a Terminal 3 account, linked when sign-in finds no account. */
+  signUpUrl?: string;
   /** Link to continue on a phone (same request id). */
   handoffUrl?: string;
   /** How the recipient is named in the privacy label. */
@@ -83,6 +87,7 @@ export class PdeFlow extends LitElement {
     blockedReason: { state: true },
     retryable: { state: true },
     sealReady: { state: true },
+    needsAccount: { state: true },
     setupNeeded: { state: true },
     settingUp: { state: true },
     setupStep: { state: true },
@@ -108,6 +113,8 @@ export class PdeFlow extends LitElement {
   blockedReason = "";
   retryable = false;
   sealReady = false;
+  /** Signed in, but not with a Terminal 3 developer account. */
+  needsAccount = false;
   /** Signed in, but the destination (the user's own vault) must be set up first. */
   setupNeeded = false;
   settingUp = false;
@@ -298,7 +305,9 @@ export class PdeFlow extends LitElement {
         <pde-network-panel .entries=${this.entries} .open=${this.networkOpen}></pde-network-panel>
         ${this.showVerify ? this.renderVerify() : nothing}
         <div class="muted">
-          Open source · build <code>${this.config.build.sha.slice(0, 12)}</code> ·
+          Open source · build <code>${this.config.build.sha.slice(0, 12)}</code>${this.config.modeLabel
+            ? html` · <span data-testid="mode">${this.config.modeLabel}</span>`
+            : nothing} ·
           <button class="link" @click=${() => (this.showVerify = !this.showVerify)}>verify</button>
         </div>
       </footer>
@@ -329,6 +338,8 @@ export class PdeFlow extends LitElement {
             .ready=${this.sealReady}
             blocked-reason=${this.blockedReason}
             .retryable=${this.retryable}
+            sign-up-url=${this.config.signUpUrl ?? ""}
+            .needsAccount=${this.needsAccount}
             .setupNeeded=${this.setupNeeded}
             .settingUp=${this.settingUp}
             .setupStep=${this.setupStep}
@@ -555,6 +566,7 @@ export class PdeFlow extends LitElement {
     this.blockedReason = "";
     this.retryable = false;
     this.sealReady = false;
+    this.needsAccount = false;
     this.status = "Checking the secure enclave…";
     try {
       await this.config.destination.prepare();
@@ -569,7 +581,15 @@ export class PdeFlow extends LitElement {
     } catch (err) {
       const msg = (err as Error).message ?? String(err);
       this.retryable = true;
-      if ((err as Error).name === "SignInError") {
+      if ((err as Error).name === "NoDeveloperAccountError") {
+        const status = (err as { status?: string }).status ?? "none";
+        this.needsAccount = true;
+        this.blockedReason =
+          status === "none"
+            ? "This email isn't linked to a Terminal 3 account yet, so there's nowhere to seal your documents. Sign up first with this email, then tap Try again. Nothing was sent."
+            : `Your Terminal 3 account is ${status}, so it can't hold a vault yet. Nothing was sent.`;
+        this.status = "Terminal 3 account needed";
+      } else if ((err as Error).name === "SignInError") {
         this.blockedReason = /code does not match|invalid code|otp/i.test(msg)
           ? "That code didn't match. Each attempt emails a new code — use the one from the newest email. Nothing was sent."
           : /rate.?limit|cooldown|too many/i.test(msg)

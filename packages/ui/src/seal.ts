@@ -17,6 +17,8 @@ export class PdeSealConfirm extends LitElement {
     blockedReason: { type: String, attribute: "blocked-reason" },
     retryable: { type: Boolean },
     setupNeeded: { type: Boolean },
+    signUpUrl: { type: String, attribute: "sign-up-url" },
+    needsAccount: { type: Boolean },
     settingUp: { type: Boolean },
     setupStep: { type: String },
   };
@@ -31,6 +33,10 @@ export class PdeSealConfirm extends LitElement {
   retryable = false;
   /** Signed in, but the user's vault doesn't exist yet: offer to set it up. */
   setupNeeded = false;
+  /** Where to create a Terminal 3 account; empty when this destination doesn't need one. */
+  signUpUrl = "";
+  /** Sign-in worked but it isn't a Terminal 3 developer account. */
+  needsAccount = false;
   settingUp = false;
   /** What vault setup is doing now. */
   setupStep = "";
@@ -47,6 +53,15 @@ export class PdeSealConfirm extends LitElement {
       }
       .setup p {
         margin: 6px 0 10px;
+      }
+      a.primary-link {
+        display: inline-block;
+        font-weight: 600;
+        padding: 10px 16px;
+        border-radius: var(--pde-radius);
+        background: var(--pde-accent);
+        color: #fff;
+        text-decoration: none;
       }
       :host {
         display: block;
@@ -94,6 +109,13 @@ export class PdeSealConfirm extends LitElement {
         <p class="muted">${this.destination.label}</p>
         ${this.destination.account
           ? html`<p data-testid="seal-account">Saving to the vault of <code>${this.destination.account}</code></p>`
+          : null}
+        ${this.needsAccount && this.signUpUrl
+          ? html`<div class="setup" data-testid="account-needed">
+              <strong>Sign up for a Terminal 3 account first.</strong>
+              <p>Use the same email you just entered. It's free and comes with test credits. Then come back and tap Try again.</p>
+              <a class="primary-link" href=${this.signUpUrl} target="_blank" rel="noopener" data-testid="sign-up">Sign up for Terminal 3</a>
+            </div>`
           : null}
         ${this.setupNeeded
           ? html`<div class="setup" data-testid="vault-setup">

@@ -1,12 +1,16 @@
 import { HpkeDestination, hpkeSuite } from "@pde/adapter-hpke";
-import type { Destination, Submission } from "@pde/core";
+import { NoDeveloperAccountError, type Destination, type Submission } from "@pde/core";
 import type { T3nTarget } from "@pde/adapter-t3n";
 import { askEmail, askOtpCode, chooseSignIn, type SignInMethod } from "./otp-dialog.ts";
 import { loadVaultContract, VAULT_MAPS } from "./vault.ts";
 
 export type DestinationConfig =
-  /** `simulateVaultSetup`: show the "Set up my vault" step once (demo / tests; nothing is sent). */
-  | { type: "dry-run"; simulateVaultSetup?: boolean }
+  /**
+   * Demo / tests, nothing is sent. `simulateVaultSetup`: show the "Set up my
+   * vault" step once. `simulateNoDeveloperAccount`: the first sign-in isn't a
+   * developer account (as for an email that never signed up).
+   */
+  | { type: "dry-run"; simulateVaultSetup?: boolean; simulateNoDeveloperAccount?: boolean }
   | { type: "hpke"; endpoint: string; recipientPublicKey: string; keyId: string; label?: string }
   | {
       type: "t3n";
@@ -24,8 +28,10 @@ export type DestinationConfig =
  */
 class DryRunDestination implements Destination {
   private vaultMissing: boolean;
-  constructor(cfg: { simulateVaultSetup?: boolean }) {
+  private noAccount: boolean;
+  constructor(cfg: { simulateVaultSetup?: boolean; simulateNoDeveloperAccount?: boolean }) {
     this.vaultMissing = cfg.simulateVaultSetup === true;
+    this.noAccount = cfg.simulateNoDeveloperAccount === true;
   }
   async needsSetup() {
     return this.vaultMissing;
@@ -40,7 +46,12 @@ class DryRunDestination implements Destination {
   origins() {
     return [];
   }
-  async prepare() {}
+  async prepare() {
+    if (this.noAccount) {
+      this.noAccount = false;
+      throw new NoDeveloperAccountError("none");
+    }
+  }
   async submit(submission: Submission) {
     const suite = hpkeSuite();
     const kp = await suite.kem.generateKeyPair();
@@ -85,6 +96,8 @@ class LazyT3nDestination implements Destination {
       environment: this.cfg.environment,
       target: this.cfg.target,
       vault: { maps: VAULT_MAPS, load: loadVaultContract },
+      // A vault needs a real Terminal 3 developer account, not just an email that signed in here.
+      requireDeveloperAccount: this.cfg.target.kind === "own-contract",
       handlers: (sdk) => ({
         EthSign: ((...args: unknown[]) => {
           if (!address) throw new Error("wallet not connected");
@@ -97,11 +110,10 @@ class LazyT3nDestination implements Destination {
           // Same identity (and credits) as your ETH key / API key; the key
           // stays in the wallet and never touches this page.
           address = await walletAddress();
-          await client.authenticate(sdk.createEthAuthInput(address));
-          return;
+          return client.authenticate(sdk.createEthAuthInput(address));
         }
         const email = await askEmail();
-        await client.authenticate(sdk.createEmailOtpAuthInput({ email, getOtpCode: askOtpCode }));
+        return client.authenticate(sdk.createEmailOtpAuthInput({ email, getOtpCode: askOtpCode }));
       },
     });
     await dest.prepare();
