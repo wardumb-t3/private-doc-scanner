@@ -1,0 +1,15 @@
+{
+  "name": "terminal3",
+  "description": "Terminal 3 plugins for Claude Code",
+  "owner": { "name": "Terminal 3" },
+  "plugins": [
+    {
+      "name": "private-doc-scanner",
+      "source": "./plugins/private-doc-scanner",
+      "description": "Use private documents with AI without uploading them: scan on your phone, seal to your own T3N vault, check results without seeing values.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "tags": ["privacy", "documents", "vault"]
+    }
+  ]
+}

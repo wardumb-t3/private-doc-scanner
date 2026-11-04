@@ -54,6 +54,14 @@ Steps:
 7. Ask me what I want to build first.
 ```
 
+**Or install it as a Claude Code plugin**, which adds the skills to every project:
+
+```text
+/plugin install private-doc-scanner --marketplace Terminal-3/private-doc-scanner
+```
+
+Then ask Claude "set up my private vault" or "store my passport privately".
+
 For Codex, use the same prompt and save the memory section to `~/.codex/AGENTS.md`. The repo's own [`CLAUDE.md`](CLAUDE.md), [`AGENTS.md`](AGENTS.md) and [skills](.claude/skills) tell coding agents how to use it.
 
 ## FAQ

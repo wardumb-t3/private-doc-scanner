@@ -1,0 +1,10 @@
+{
+  "name": "private-doc-scanner",
+  "description": "Use your passport, payslip or bank statement with AI without uploading it: scanned on your phone, sealed to your own T3N vault. Sets up the vault, gives you scanner links, and checks what was stored without seeing the values.",
+  "version": "0.1.0",
+  "author": { "name": "Terminal 3" },
+  "homepage": "https://github.com/Terminal-3/private-doc-scanner",
+  "repository": "https://github.com/Terminal-3/private-doc-scanner",
+  "license": "Apache-2.0",
+  "keywords": ["privacy", "documents", "ocr", "t3n", "terminal3", "vault", "kyc"]
+}

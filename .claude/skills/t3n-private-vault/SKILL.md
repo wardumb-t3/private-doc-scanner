@@ -20,6 +20,11 @@ status and rule results, never values, images or files.
   own terminal, not here.
 
 ## 0. Prerequisites
+0. Find the scanner repo (call it `<repo>` below):
+   - the current project, if it has `starter/scripts/setup-vault.ts`;
+   - otherwise `~/t3n-workspace/private-doc-scanner`. If it isn't there, clone it:
+     `git clone https://github.com/Terminal-3/private-doc-scanner ~/t3n-workspace/private-doc-scanner`.
+   Paths below are relative to `<repo>`.
 1. The key: the scripts read `T3N_API_KEY` from the environment or from `starter/.env`
    (git-ignored), and say so if neither has it. If missing:
    - on the user's own computer, copy `starter/.env.example` to `starter/.env` and ask them to paste
@@ -28,7 +33,7 @@ status and rule results, never values, images or files.
    - no key yet: they sign up at https://terminal3.io/products/agent-developer-kit, using the email
      they'll use in the scanner.
    Never ask them to paste it in chat.
-2. All commands below run from the repo's `starter/` folder. Install once there: `cd starter && npm install`.
+2. All commands below run from `<repo>/starter`. Install once there: `cd <repo>/starter && npm install`.
 
 ## 1. "Set up my vault"
 Run `npx tsx scripts/setup-vault.ts`. It verifies the bundled contract file against its pinned

@@ -23,4 +23,6 @@ details to the user's own T3N vault. Run commands yourself; don't ask the user t
   `contracts/doc-intake` (`cargo test`, `cargo build --target wasm32-wasip2 --release`).
 - Changing the contract means rebuilding it, copying the `.wasm` to `starter/vault/` and updating the
   SHA-256 and version in `starter/vault/manifest.json` (the app checks that hash before registering).
+- The skills live in two places: `.claude/skills` (for this repo) and
+  `plugins/private-doc-scanner/skills` (the Claude Code plugin). Edit both; CI fails if they differ.
 - Privacy rules are tested end to end (`e2e/privacy.spec.ts`); keep them passing.

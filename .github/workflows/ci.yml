@@ -78,3 +78,11 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: npm run check
+
+  plugin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Plugin skills match the repo's skills
+        run: diff -r .claude/skills plugins/private-doc-scanner/skills
