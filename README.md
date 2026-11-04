@@ -12,8 +12,8 @@ Asking Claude or ChatGPT to "read this payslip" sends the whole document to the 
 
 ## Try it
 
-1. **Scan, no account needed.** Open the scanner on your phone, pick a document type, and upload a file or take a photo. It's read on the device and you see what it extracted, with the checks it ran. Nothing is sent anywhere.
-2. **Let your AI use it.** At "Seal and send", sign in with your email and the code it sends. First time, the scanner sets up your private vault (about 1,100 test credits on T3N testnet, once) and seals what you reviewed into it.
+1. **Scan, no account needed.** Open the scanner on your phone, pick a document type, and upload a file or take a photo. It's read on the device and you see what it extracted, with the checks it ran. Everything happens on-device and nothing is sent anywhere.
+2. **Let your AI use it.** At "Seal and send", sign in with your email and the code it sends. First time, the scanner sets up your private vault (about 1,100 test credits on T3N testnet, once) and seals what you reviewed into it. (you need an existing Terminal 3 account with an active DID, get yours for free at https://terminal3.io/products/agent-developer-kit with pre-loaded credits)
 3. **Connect your AI.** Paste the prompt below into Claude Code or Codex. Your assistant installs the T3N SDK, connects to your vault, and remembers the setup for next time.
 
 ### Setup prompt (Claude Code)
