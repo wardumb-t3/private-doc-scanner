@@ -44,6 +44,10 @@ export class PdeSealConfirm extends LitElement {
   static override styles = [
     tokens,
     css`
+      code.did {
+        overflow-wrap: anywhere;
+        word-break: break-all;
+      }
       .setup {
         border: 1px solid var(--pde-border);
         border-radius: var(--pde-radius);
@@ -108,7 +112,7 @@ export class PdeSealConfirm extends LitElement {
         <h3>Encrypting to ${this.destination.kind}${this.destination.id ? html` <code>${this.destination.id}</code>` : null}</h3>
         <p class="muted">${this.destination.label}</p>
         ${this.destination.account
-          ? html`<p data-testid="seal-account">Saving to the vault of <code>${this.destination.account}</code></p>`
+          ? html`<p data-testid="seal-account">Saving to the vault of <code class="did">${this.destination.account}</code></p>`
           : null}
         ${this.needsAccount && this.signUpUrl
           ? html`<div class="setup" data-testid="account-needed">

@@ -1,6 +1,6 @@
 import type { Submission } from "@pde/core";
 import { describe, expect, it, vi } from "vitest";
-import { identityProfile, shortDid, T3nDestination } from "../src/index.ts";
+import { identityProfile, T3nDestination } from "../src/index.ts";
 
 const submission: Submission = {
   schema: "pde.submission/v1",
@@ -256,8 +256,11 @@ describe("T3 destination: the signed-in user's own vault", () => {
     expect(await fixed.needsSetup()).toBe(false);
   });
 
-  it("shortens long DIDs for display", () => {
-    expect(shortDid("did:t3n:0123456789abcdef0123")).toBe("did:t3n:012345…0123");
+  it("shows the full DID, so the user can check exactly which account it is", async () => {
+    const { sdk } = fakeSdk();
+    const d = own(sdk);
+    await d.prepare();
+    expect(d.describe().account).toBe("did:t3n:abc");
   });
 });
 

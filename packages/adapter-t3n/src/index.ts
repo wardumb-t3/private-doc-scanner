@@ -86,7 +86,7 @@ export class T3nDestination implements Destination {
       id: new URL(this.opts.baseUrl).host,
       label: own ? "Your own private vault on T3, inside the secure enclave" : "T3 secure enclave",
       // Shown once signed in, so the user can see whose vault this is.
-      ...(did ? { account: shortDid(did) } : {}),
+      ...(did ? { account: did } : {}),
     };
   }
 
@@ -260,10 +260,4 @@ export function identityProfile(s: Submission): Record<string, unknown> {
     ...(v("surname") ? { last_name: title(v("surname")) } : {}),
     ...(v("issuing_country") ? { document_issuance_country: v("issuing_country") } : {}),
   };
-}
-
-/** "did:t3n:ab12…cd34": enough to recognise an account, short enough to read. */
-export function shortDid(did: string): string {
-  const id = did.replace(/^did:t3n:/, "");
-  return id.length > 12 ? `did:t3n:${id.slice(0, 6)}…${id.slice(-4)}` : did;
 }

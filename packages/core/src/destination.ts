@@ -32,7 +32,7 @@ export interface DestinationInfo {
   /** Node id / key fingerprint shown to the user. */
   id: string;
   label: string;
-  /** Who the data is saved for, once signed in (e.g. "did:t3n:ab12…cd34"). */
+  /** Who the data is saved for, once signed in: the full DID. */
   account?: string;
 }
 
