@@ -1,10 +1,10 @@
 # Private Doc Scanner
 
-**Open-source document scanner for AI: reads your passport, payslip or bank statement on your own phone and saves it to your own vault, so your AI can use it without seeing it.**
+**Open-source document scanner for AI: reads your passport, payslip or bank statement on your own phone and saves it to your own hardware sealed vault, so your AI can use it without seeing it.**
 
 ![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue) ![works with Claude Code](https://img.shields.io/badge/works%20with-Claude%20Code-555) ![works with Codex](https://img.shields.io/badge/works%20with-Codex-555) ![runs on device](https://img.shields.io/badge/reads%20documents-on%20device-0f6e63)
 
-Asking Claude or ChatGPT to "read this payslip" sends the whole document to the model provider. Private Doc Scanner reads it on your device instead, checks what it read, lets you confirm every field, and seals only those details to **your own T3N vault**. From there your AI can check things ("is net pay at least 3,000?", "is the passport still valid?") and get yes-or-no answers, never the values.
+Asking Claude or ChatGPT to "read this payslip" sends the whole document to the model provider. Private Doc Scanner reads it on your device instead, checks what it read, lets you confirm every field, and seals only those details to **your own Terminal 3 vault**. From there you can finally run fully autonomous transactions with your AI without it actually seeing or touching your sensitive data.
 
 | Start | Review | Your documents | Seal | Done |
 |---|---|---|---|---|
