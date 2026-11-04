@@ -82,7 +82,7 @@ In your tool's secret settings or a git-ignored `.env`, never in a chat. The set
 No. The file is read into memory on your device and never uploaded. Only the details you confirm leave, encrypted to a T3N enclave whose hardware attestation is verified first. "What left this device" shows every request the page made. The scanner code is open-sourced and available for you to verify.
 
 ### Do I need an account to try it?
-Scanning and reviewing works without one. But to save data to your Terminal 3 vault, sign in with your email and a code at "Seal and send" or to connect an AI assistant, you would need a Terminal 3 account and a developer API key from the [Agent Developer Kit sign-up](https://terminal3.io/products/agent-developer-kit). ALl new accounts come with free credits pre-funded.
+Scanning and reviewing works without one. But to save data to your Terminal 3 vault, sign in with your email and a code at "Seal and send" or to connect an AI assistant, you would need a Terminal 3 account and a developer API key from the [Agent Developer Kit sign-up](https://terminal3.io/products/agent-developer-kit). All new accounts come with free credits pre-funded.
 
 ## What it checks (you can build your own scripts to run in your Terminal 3 vaults)
 
@@ -97,7 +97,7 @@ A field is marked verified only by a deterministic check like these. The benchma
 
 ## Safety and security features (everything is open-sourced and verifiable, it is your responsibility to check through and ensure it is safe enough for your use)
 
-| Enforced by |
+| Feature | How it's enforced |
 |---|---|
 | The document never leaves the device | Files are read into memory from the picker or camera and never uploaded. CSP `connect-src 'self' <destination>`. e2e test: no request body or URL contains document values. |
 | Only reviewed fields leave, encrypted | `pde.submission/v1` carries values plus provenance only: no images, page text or file names. Sealed by `@terminal3/t3n-sdk` (ML-KEM session) or HPKE (RFC 9180). e2e test decrypts it. |
