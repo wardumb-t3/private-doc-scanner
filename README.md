@@ -14,7 +14,17 @@ Asking Claude or ChatGPT to "read this payslip" sends the whole document to the 
 
 1. **Scan, no account needed.** Open the scanner on your phone, pick a document type, and upload a file or take a photo. It's read on the device and you see what it extracted, with the checks it ran. Everything happens on-device and nothing is sent anywhere.
 2. **Let your AI use it.** At "Seal and send", sign in with your email and the code it sends. First time, the scanner sets up your private vault (about 1,100 test credits on T3N testnet, once) and seals what you reviewed into it. (you need an existing Terminal 3 account with an active DID, get yours for free at https://terminal3.io/products/agent-developer-kit with pre-loaded credits)
-3. **Connect your AI.** Paste the prompt below into Claude Code or Codex. Your assistant installs the T3N SDK, connects to your vault, and remembers the setup for next time.
+3. **Connect your AI.** Get your developer account and API key (below), then paste the setup prompt into Claude Code or Codex. Your assistant installs the T3N SDK, connects to your vault, and remembers the setup for next time.
+
+### Get your developer account and API key
+
+Scanning doesn't need an account. Saving to your vault needs a Terminal 3 account (DID), and connecting an AI assistant also needs its API key. One sign-up gives you both.
+
+1. **Sign up** at [terminal3.io/products/agent-developer-kit](https://terminal3.io/products/agent-developer-kit). Use the email you'll sign in to the scanner with, so the scanner and your assistant use the same account and vault. You get a `did:t3n` (your account ID), an API key and free testnet credits.
+2. **Save the key somewhere safe** straight away, such as a password manager. It's shown once.
+3. **Give it to your assistant without pasting it into the chat:**
+   - **Claude Code or Codex on your computer:** the setup prompt creates `starter/.env` (git-ignored) with an empty `T3N_API_KEY=` line. Open it in your editor, paste the key after the `=`, save, and tell your assistant "done".
+   - **Claude Code on the web or Codex cloud:** add `T3N_API_KEY` in the environment's secret or environment-variable settings, allow the host `cn-api.sg.testnet.t3n.terminal3.io` in its network settings, and start a new session.
 
 ### Setup prompt (Claude Code)
 
@@ -23,19 +33,25 @@ Set me up with Private Doc Scanner and Terminal 3 (T3N) so my private documents 
 and I can use them in my own workflows. Run the commands yourself.
 
 Ground rules, now and in future sessions:
-- My T3N API key is in the environment as T3N_API_KEY (or a git-ignored .env). Never ask me to paste it,
-  never print it, never put it in code, git or memory.
+- My T3N API key goes in the environment as T3N_API_KEY or in starter/.env (git-ignored). Never ask me to
+  paste it into the chat, never print it, never put it in code, git or memory.
 - Private documents go through the scanner link only; never ask me to upload or paste them.
 
 Steps:
 1. Check Node.js 22+.
-2. Clone https://github.com/Terminal-3/private-doc-scanner into ~/t3n-workspace, then in its starter/
-   folder run npm install and npx tsx scripts/setup-vault.ts. Show me my did:t3n and my vault name.
-3. Run npx tsx scripts/new-link.ts <the document types I want> and give me the link to open on my phone.
-4. Draft a "Terminal 3 (T3N)" section for ~/.claude/CLAUDE.md (use T3N for private data; workspace path;
-   key from env only; my DID and vault; the new-link and vault status/evaluate commands), show it to me,
-   and save it only after I say yes. Copy the repo's .claude/skills into ~/.claude/skills.
-5. Ask me what I want to build first.
+2. Clone https://github.com/Terminal-3/private-doc-scanner into ~/t3n-workspace, then run npm install
+   in its starter/ folder.
+3. API key: if T3N_API_KEY isn't set in the environment, copy starter/.env.example to starter/.env
+   (it's git-ignored) and stop. Tell me to sign up at https://terminal3.io/products/agent-developer-kit
+   if I don't have a key yet (with the same email I'll use in the scanner), then to paste the key into
+   starter/.env in my editor and say "done". Never open, read or print that file's value.
+4. In starter/, run npx tsx scripts/setup-vault.ts. Show me my did:t3n and my vault name.
+5. Run npx tsx scripts/new-link.ts <the document types I want> and give me the link to open on my phone.
+6. Draft a "Terminal 3 (T3N)" section for ~/.claude/CLAUDE.md (use T3N for private data; workspace path;
+   key from starter/.env or the environment only; my DID and vault; the new-link and vault
+   status/evaluate commands), show it to me, and save it only after I say yes. Copy the repo's
+   .claude/skills into ~/.claude/skills.
+7. Ask me what I want to build first.
 ```
 
 For Codex, use the same prompt and save the memory section to `~/.codex/AGENTS.md`. The repo's own [`CLAUDE.md`](CLAUDE.md), [`AGENTS.md`](AGENTS.md) and [skills](.claude/skills) tell coding agents how to use it.
@@ -58,7 +74,7 @@ In your tool's secret settings or a git-ignored `.env`, never in a chat. The set
 No. The file is read into memory on your device and never uploaded. Only the details you confirm leave, encrypted to a T3N enclave whose hardware attestation is verified first. "What left this device" lists every request the page made.
 
 ### Do I need an account to try it?
-No. Scanning and reviewing work without one. You need a T3N account (email and a code) only to save the result to your vault.
+No. Scanning and reviewing work without one. To save a scan to your vault, sign in with your email and a code at "Seal and send". To connect an AI assistant, you also need a developer API key from the [Agent Developer Kit sign-up](https://terminal3.io/products/agent-developer-kit).
 
 ## What it checks
 

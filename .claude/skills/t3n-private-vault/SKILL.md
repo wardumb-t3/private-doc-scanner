@@ -20,9 +20,14 @@ status and rule results, never values, images or files.
   own terminal, not here.
 
 ## 0. Prerequisites
-1. `T3N_API_KEY` is set (the scripts say so if not). If missing: tell the user to add it in the
-   Claude Code environment settings (environment menu → Edit → Network secrets or Environment
-   variables) and start a new session. Never ask them to paste it in chat.
+1. The key: the scripts read `T3N_API_KEY` from the environment or from `starter/.env`
+   (git-ignored), and say so if neither has it. If missing:
+   - on the user's own computer, copy `starter/.env.example` to `starter/.env` and ask them to paste
+     the key into it in their editor, then say "done" (never read or print the value);
+   - in a cloud session, they add `T3N_API_KEY` in the environment's settings and start a new session;
+   - no key yet: they sign up at https://terminal3.io/products/agent-developer-kit, using the email
+     they'll use in the scanner.
+   Never ask them to paste it in chat.
 2. All commands below run from the repo's `starter/` folder. Install once there: `cd starter && npm install`.
 
 ## 1. "Set up my vault"

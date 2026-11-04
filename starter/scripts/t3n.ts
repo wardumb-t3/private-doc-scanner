@@ -7,15 +7,26 @@ import * as sdk from "@terminal3/t3n-sdk";
 export { sdk };
 
 export const ENV = "testnet" as const;
+export const SIGN_UP_URL = "https://terminal3.io/products/agent-developer-kit";
 export const NODE_URL = (process.env.T3N_BASE_URL ?? sdk.NODE_URLS[ENV]).replace(/\/+$/, "");
 
+/** starter/.env (git-ignored), for running on your own computer. */
+const ENV_FILE = new URL("../.env", import.meta.url);
+
 export function apiKey(): string {
-  const key = process.env.T3N_API_KEY;
+  if (!process.env.T3N_API_KEY) {
+    try {
+      process.loadEnvFile(ENV_FILE);
+    } catch {
+      // No .env: the key may come from the environment settings instead.
+    }
+  }
+  const key = process.env.T3N_API_KEY?.trim();
   if (!key) {
     fail(
-      "T3N_API_KEY is not set in this environment. Add it in the Claude Code environment settings " +
-        "(environment menu → Edit → Network secrets / Environment variables), then start a new session. " +
-        "Never paste the key into the chat.",
+      "No T3N API key found. Get one by signing up at " + SIGN_UP_URL + " (it's shown once), then either " +
+        "put it in starter/.env as T3N_API_KEY=… (on your own computer; copy starter/.env.example) or add " +
+        "T3N_API_KEY in your cloud environment's secret settings. Never paste the key into the chat.",
     );
   }
   return key;

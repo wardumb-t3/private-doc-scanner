@@ -11,3 +11,4 @@ apps/capture-pwa/public/vault/
 contracts/*/target/
 tools/t3/out/
 deploy/out/
+.env

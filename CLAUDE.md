@@ -9,8 +9,11 @@ details to the user's own T3N vault. Run commands yourself; don't ask the user t
   `starter/`; run them from that folder after `npm install` there.
 - First connection to Terminal 3, DID, SDK questions: the `t3n-adk-quickstart` skill.
 - Documents and their values must never enter the chat. Give the user a scanner link instead.
-- Their key is in the environment as `T3N_API_KEY`. Never ask for it in chat, print it, or write it
-  to a file or to memory.
+- Their key comes from `T3N_API_KEY` in the environment or `starter/.env` (git-ignored). If it's
+  missing, copy `starter/.env.example` to `starter/.env` and ask them to paste the key into it in
+  their editor; no key yet means signing up at https://terminal3.io/products/agent-developer-kit
+  with the email they'll use in the scanner. Never ask for the key in chat, print it, or write it to
+  memory.
 
 ## If the user is working on the code
 

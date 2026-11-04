@@ -7,6 +7,12 @@ details to the user's own T3N vault. Run commands yourself; don't ask the user t
 
 All scripts live in `starter/`. Run `cd starter && npm install` once.
 
+**API key first.** The scripts read `T3N_API_KEY` from the environment or from `starter/.env`
+(git-ignored). If neither has it, copy `starter/.env.example` to `starter/.env` and ask the user to
+paste their key into it in their editor, not the chat. If they have no key yet, they sign up at
+https://terminal3.io/products/agent-developer-kit with the same email they'll use in the scanner.
+Never read or print the file's value.
+
 1. **Set up their vault** (once, about 1,100 test credits): `npx tsx scripts/setup-vault.ts`.
    Report their DID and vault name.
 2. **Store a document**: `npx tsx scripts/new-link.ts <types>` with types from `passport`,

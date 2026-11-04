@@ -44,8 +44,10 @@ chat; you never open a terminal.
 
 ## Your key
 
-The key stays in your environment settings. Nothing in this repo asks for it, prints it or
-writes it to disk; the capture page never needs it (you sign in there with email + code).
+On your own computer, the key goes in `starter/.env` (copy `.env.example`; the file is git-ignored).
+In a cloud session, it goes in the environment's secret settings. Nothing in this repo asks for it in a
+chat, prints it or sends it anywhere but T3N; the scanner page never needs it (you sign in there with
+email + code).
 
 ## Who can see what
 
