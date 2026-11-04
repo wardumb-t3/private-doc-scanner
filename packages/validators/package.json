@@ -1,0 +1,13 @@
+{
+  "name": "@pde/validators",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "mrz": "^5.0.2"
+  }
+}

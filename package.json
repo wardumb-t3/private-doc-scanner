@@ -1,0 +1,41 @@
+{
+  "name": "private-doc-scanner",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Open-source document scanner for AI: reads passports, payslips and statements on your own device and seals them to your own T3N vault. Nothing is sent to an AI.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm --filter @pde/capture-pwa run build",
+    "dev": "pnpm --filter @pde/capture-pwa run dev",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "bench": "pnpm --filter @pde/bench run bench",
+    "t3:deploy": "pnpm --filter @pde/t3-tools run deploy",
+    "t3:smoke": "pnpm --filter @pde/t3-tools run smoke",
+    "t3:agent-status": "pnpm --filter @pde/t3-tools run agent-status",
+    "contract:build": "cd contracts/doc-intake && cargo build --target wasm32-wasip2 --release",
+    "contract:test": "cd contracts/doc-intake && cargo test",
+    "t3:config": "pnpm --filter @pde/t3-tools run config",
+    "t3:agents": "pnpm --filter @pde/t3-tools run agents"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@hpke/core": "^1.9.0",
+    "@napi-rs/canvas": "^1.0.13",
+    "@pde/bench": "workspace:*",
+    "@playwright/test": "1.56.1",
+    "@types/node": "^26.6.5",
+    "eslint": "^10.13.0",
+    "pdf-lib": "^1.17.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5"
+  }
+}

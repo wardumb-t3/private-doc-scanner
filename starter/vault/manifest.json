@@ -1,0 +1,9 @@
+{
+  "$comment": "The private-vault contract this kit registers under your DID. Built from contracts/doc-intake in this repository (Rust, wasm32-wasip2). setup-vault refuses to register a file whose SHA-256 differs from this.",
+  "tail": "doc-intake",
+  "version": "0.1.0",
+  "file": "doc-intake.wasm",
+  "sha256": "493d2d3925102cf00260c65e93b326a6599d9db830ea3f8b20bdf8ab12e360ba",
+  "source_commit": "a0746d2",
+  "maps": ["intake", "config"]
+}

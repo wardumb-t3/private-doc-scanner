@@ -1,0 +1,23 @@
+# Private Doc Scanner
+
+> Open-source document scanner for AI by Terminal 3. It reads a passport, ID card, payslip or bank statement on the user's own device, checks what it read (MRZ check digits, payslip and statement arithmetic, IBAN), lets the user confirm every field, and seals only those details to the user's own T3N vault. AI assistants then ask the vault yes-or-no questions (net pay at least X, document not expired) and never see the values.
+
+Use it when someone wants to use a private document with an AI assistant without uploading it, or needs an AI workflow to rely on verified personal data it must not see.
+
+## Start here
+
+- [README](README.md): what it does, how to try it, the setup prompt for Claude Code and Codex, FAQ
+- [Instructions for coding agents](AGENTS.md): set up a vault, make a scanner link, check a submission
+- [Starter kit](starter/README.md): the scripts an assistant runs (setup-vault, new-link, vault status/evaluate)
+
+## How it works
+
+- [Privacy model](docs/privacy-model.md): what leaves the device, what the enclave sees, limits
+- [T3N integration](docs/integration-t3.md): the request link, the submission payload, how an agent reads status
+- [Reading engines](docs/engines.md): PP-OCRv4 on WebGPU/WASM, Tesseract, pdf.js, device tiers
+- [Self-hosting](deploy/README.md): Vercel or a VPS, with the same-origin relay to T3N
+
+## Optional
+
+- [Vault contract source](contracts/doc-intake): Rust TEE contract, `ingest` / `status` / `evaluate`
+- [Terminal 3 ADK skill](.claude/skills/t3n-adk-quickstart/SKILL.md): connecting to T3N with the SDK

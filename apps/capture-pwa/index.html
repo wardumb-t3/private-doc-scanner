@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Private document capture</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        margin: 0;
+        background: #fff;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #111418;
+        }
+      }
+      .boot {
+        max-width: 640px;
+        margin: 40px auto;
+        padding: 0 16px;
+        color: #5b6573;
+      }
+    </style>
+  </head>
+  <body>
+    <pde-flow><p class="boot">Loading the private document reader…</p></pde-flow>
+    <noscript><p class="boot">This page reads your document on your device, which needs JavaScript.</p></noscript>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

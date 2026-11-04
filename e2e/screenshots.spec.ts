@@ -1,0 +1,31 @@
+import { expect, test } from "@playwright/test";
+import { passportFile, payslipFile } from "./fixtures.ts";
+test.use({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
+// Regenerates docs/screenshots: PDE_SCREENSHOTS=1 pnpm test:e2e screenshots
+test("screens", async ({ page }) => {
+  test.skip(!process.env.PDE_SCREENSHOTS, "set PDE_SCREENSHOTS=1 to regenerate docs/screenshots");
+  const out = "docs/screenshots/";
+  const f = page.locator("pde-flow");
+  await page.goto("./?req=req_demo&types=passport,payslip");
+  await expect(f.getByTestId("offline-ready")).toBeVisible();
+  await f.getByRole("button", { name: "More ›" }).click();
+  await page.screenshot({ path: out + "1-start.png", fullPage: true });
+  await f.getByTestId("choose-passport").click();
+  await f.getByTestId("file-input").setInputFiles(passportFile(7).file);
+  await expect(f.getByTestId("review-continue")).toBeVisible();
+  await page.screenshot({ path: out + "2-review-passport.png", fullPage: true });
+  await f.getByTestId("review-continue").click();
+  await f.getByTestId("scan-more").click();
+  await f.getByTestId("choose-payslip").click();
+  await f.getByTestId("file-input").setInputFiles((await payslipFile(5)).file);
+  await expect(f.getByTestId("review-continue")).toBeVisible();
+  await f.getByTestId("review-continue").click();
+  await page.screenshot({ path: out + "3-your-documents.png", fullPage: true });
+  await f.getByTestId("to-seal").click();
+  await expect(f.getByTestId("seal")).toBeVisible();
+  await page.screenshot({ path: out + "4-seal.png", fullPage: true });
+  await f.getByTestId("seal").click();
+  await expect(f.getByTestId("done")).toBeVisible();
+  await f.locator("pde-network-panel summary").click();
+  await page.screenshot({ path: out + "5-done-network.png", fullPage: true });
+});

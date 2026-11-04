@@ -1,0 +1,21 @@
+{
+  "name": "@pde/t3-tools",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "deploy": "node --experimental-strip-types deploy.ts",
+    "smoke": "node --experimental-strip-types smoke.ts",
+    "agent-status": "node --experimental-strip-types agent-status.ts",
+    "config": "node --experimental-strip-types make-config.ts",
+    "agents": "node --experimental-strip-types set-agents.ts"
+  },
+  "dependencies": {
+    "@pde/adapter-t3n": "workspace:*",
+    "@pde/bench": "workspace:*",
+    "@pde/core": "workspace:*",
+    "@pde/engines-web": "workspace:*",
+    "@terminal3/t3n-sdk": "5.31.0"
+  }
+}

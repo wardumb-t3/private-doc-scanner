@@ -1,0 +1,26 @@
+{
+  "name": "@pde/capture-pwa",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "scripts": {
+    "assets": "node scripts/prepare-assets.mjs",
+    "dev": "node scripts/prepare-assets.mjs && vite",
+    "build": "node scripts/prepare-assets.mjs && vite build && node scripts/check-syntax.mjs && node scripts/precompress.mjs",
+    "preview": "vite preview --port 4173 --strictPort"
+  },
+  "dependencies": {
+    "@pde/adapter-hpke": "workspace:*",
+    "@pde/adapter-t3n": "workspace:*",
+    "@pde/core": "workspace:*",
+    "@pde/engines-web": "workspace:*",
+    "@pde/ui": "workspace:*",
+    "pdfjs-dist": "^6.4.299"
+  },
+  "devDependencies": {
+    "acorn": "^8.19.0",
+    "vite": "^8.3.5"
+  }
+}

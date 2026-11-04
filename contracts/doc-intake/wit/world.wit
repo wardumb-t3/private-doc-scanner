@@ -1,0 +1,29 @@
+// Host packages vendored from Terminal-3/trinity release testnet-v1.0.11
+// (2413141a): host-interfaces@2.2.0 and host-tenant@2.0.0. host-tenant 2.x is
+// not link-compatible with 1.x — re-vendor if the target cluster changes.
+package z:doc-intake@0.1.0;
+
+// Only the `tenant-base` world's capabilities: context, logging, kv-store.
+// No HTTP — submitted values never leave the enclave through this contract.
+world doc-intake {
+  import host:tenant/tenant-context@2.0.0;
+  import host:interfaces/logging@2.2.0;
+  import host:interfaces/kv-store@2.2.0;
+
+  export contracts;
+}
+
+interface contracts {
+  record generic-input {
+    input:        option<list<u8>>,
+    user-profile: option<list<u8>>,
+    context:      option<list<u8>>,
+  }
+
+  // The end user (data subject) stores their reviewed `pde.submission/v1`.
+  ingest:   func(req: generic-input) -> result<list<u8>, string>;
+  // Field presence and check results for a request — never values.
+  status:   func(req: generic-input) -> result<list<u8>, string>;
+  // Last-mile decisions computed inside the enclave (yes / no only).
+  evaluate: func(req: generic-input) -> result<list<u8>, string>;
+}

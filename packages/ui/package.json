@@ -1,0 +1,14 @@
+{
+  "name": "@pde/ui",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@pde/core": "workspace:*",
+    "lit": "^3.3.3",
+    "uqr": "^0.1.3"
+  }
+}

@@ -1,0 +1,80 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - name: Unit + integration tests (real OCR models, synthetic documents)
+        run: pnpm test
+      - name: Accuracy benchmark (fails if any validated field is wrong)
+        run: pnpm bench -- --n 10
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bench-report
+          path: bench/out/report.md
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: End-to-end (privacy guarantees against the production build)
+        run: pnpm test:e2e
+        env:
+          CI: "1"
+
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: contracts/doc-intake
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip2
+      - run: cargo test
+      - run: cargo build --target wasm32-wasip2 --release
+      - name: Tenant WASM size limit (1 MiB)
+        run: |
+          size=$(stat -c %s target/wasm32-wasip2/release/z_doc_intake.wasm)
+          echo "z_doc_intake.wasm: $size bytes"
+          test "$size" -le 1048576
+      - name: The starter's contract file matches its manifest
+        working-directory: .
+        run: |
+          want=$(node -p "require('./starter/vault/manifest.json').sha256")
+          got=$(sha256sum starter/vault/doc-intake.wasm | cut -d' ' -f1)
+          test "$want" = "$got"
+
+  starter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: starter
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run check

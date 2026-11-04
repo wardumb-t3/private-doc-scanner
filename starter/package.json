@@ -1,0 +1,22 @@
+{
+  "name": "t3n-private-vault-starter",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "description": "Keep your private documents in your own T3N vault, read on your own device. Driven from Claude Code chat.",
+  "scripts": {
+    "setup-vault": "tsx scripts/setup-vault.ts",
+    "new-link": "tsx scripts/new-link.ts",
+    "vault": "tsx scripts/vault.ts",
+    "check": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@terminal3/t3n-sdk": "^5.31.0",
+    "tsx": "^4.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,13 @@
+node_modules/
+dist/
+playwright-report/
+test-results/
+bench/out/
+apps/capture-pwa/public/models/
+apps/capture-pwa/public/pdfjs/
+*.log
+apps/capture-pwa/public/tesseract/
+apps/capture-pwa/public/vault/
+contracts/*/target/
+tools/t3/out/
+deploy/out/

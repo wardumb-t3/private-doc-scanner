@@ -1,0 +1,6 @@
+{
+  "$comment": "Deployment config. 'destination.type' is one of: dry-run (nothing is sent; for demos), hpke (sealed POST to a key you control), t3n (a T3 node via @terminal3/t3n-sdk).",
+  "destination": { "type": "dry-run" },
+  "defaultDocTypes": ["passport", "payslip"],
+  "repoUrl": "https://github.com/Terminal-3/private-doc-scanner"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@pde/engines-web",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts",
+    "./polyfills": "./src/polyfills.ts"
+  },
+  "sideEffects": [
+    "./src/polyfills.ts"
+  ],
+  "dependencies": {
+    "@gutenye/ocr-models": "^1.4.2",
+    "@pde/core": "workspace:*",
+    "@tesseract.js-data/eng": "^1.0.0",
+    "onnxruntime-web": "^1.30.0",
+    "pdfjs-dist": "^6.4.299",
+    "tesseract.js": "^7.0.0"
+  },
+  "peerDependencies": {
+    "@napi-rs/canvas": ">=0.1"
+  },
+  "peerDependenciesMeta": {
+    "@napi-rs/canvas": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "^1.0.13"
+  }
+}

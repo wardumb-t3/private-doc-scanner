@@ -1,0 +1,20 @@
+{
+  "name": "@pde/bench",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    "./synth": "./synth.ts"
+  },
+  "scripts": {
+    "bench": "node --experimental-strip-types run.ts"
+  },
+  "dependencies": {
+    "@pde/core": "workspace:*",
+    "@pde/engines-web": "workspace:*",
+    "@pde/validators": "workspace:*",
+    "@napi-rs/canvas": "^1.0.13",
+    "pdf-lib": "^1.17.1"
+  }
+}

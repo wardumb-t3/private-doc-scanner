@@ -1,0 +1,9 @@
+{
+  "name": "Private document capture",
+  "short_name": "Doc capture",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1f5eff",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

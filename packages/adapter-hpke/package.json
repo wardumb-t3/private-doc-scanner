@@ -1,0 +1,14 @@
+{
+  "name": "@pde/adapter-hpke",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "@hpke/core": "^1.9.0",
+    "@pde/core": "workspace:*"
+  }
+}
