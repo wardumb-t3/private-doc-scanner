@@ -11,7 +11,7 @@ set -euo pipefail
 
 : "${CAPTURE_DOMAIN:?set CAPTURE_DOMAIN, e.g. capture.example.com}"
 APP_USER="${APP_USER:-pde}"
-REPO_URL="${REPO_URL:-https://github.com/Terminal-3/private-doc-scanner.git}"
+REPO_URL="${REPO_URL:-https://github.com/wardumb-t3/private-doc-scanner.git}"
 REPO_BRANCH="${REPO_BRANCH:-main}"
 APP_HOME="/home/${APP_USER}"
 

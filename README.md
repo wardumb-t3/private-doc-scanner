@@ -39,7 +39,7 @@ Ground rules, now and in future sessions:
 
 Steps:
 1. Check Node.js 22+.
-2. Clone https://github.com/Terminal-3/private-doc-scanner into ~/t3n-workspace, then run npm install
+2. Clone https://github.com/wardumb-t3/private-doc-scanner into ~/t3n-workspace, then run npm install
    in its starter/ folder.
 3. API key: if T3N_API_KEY isn't set in the environment, copy starter/.env.example to starter/.env
    (it's git-ignored) and stop. Tell me to sign up at https://terminal3.io/products/agent-developer-kit
@@ -57,7 +57,7 @@ Steps:
 **Or install it as a Claude Code plugin**, which adds the skills to every project:
 
 ```text
-/plugin install private-doc-scanner --marketplace Terminal-3/private-doc-scanner
+/plugin install private-doc-scanner --marketplace wardumb-t3/private-doc-scanner
 ```
 
 Then ask Claude "set up my private vault" or "store my passport privately".

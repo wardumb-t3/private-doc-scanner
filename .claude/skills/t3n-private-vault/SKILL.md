@@ -23,7 +23,7 @@ status and rule results, never values, images or files.
 0. Find the scanner repo (call it `<repo>` below):
    - the current project, if it has `starter/scripts/setup-vault.ts`;
    - otherwise `~/t3n-workspace/private-doc-scanner`. If it isn't there, clone it:
-     `git clone https://github.com/Terminal-3/private-doc-scanner ~/t3n-workspace/private-doc-scanner`.
+     `git clone https://github.com/wardumb-t3/private-doc-scanner ~/t3n-workspace/private-doc-scanner`.
    Paths below are relative to `<repo>`.
 1. The key: the scripts read `T3N_API_KEY` from the environment or from `starter/.env`
    (git-ignored), and say so if neither has it. If missing:

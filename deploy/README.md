@@ -31,7 +31,7 @@ It is a **blind** relay:
 2. **Firewall:** in hPanel → VPS → Security → Firewall, allow TCP **22, 80 and 443**. Hostinger's firewall drops everything else, and Caddy needs port 80 to get its certificate.
 3. **Setup, once, as root:**
    ```sh
-   git clone https://github.com/Terminal-3/private-doc-scanner.git /tmp/pds
+   git clone https://github.com/wardumb-t3/private-doc-scanner.git /tmp/pds
    CAPTURE_DOMAIN=capture.example.com bash /tmp/pds/deploy/vps/setup.sh
    ```
    This installs Caddy and Node 22 + pnpm, creates a `pde` user with a checkout, enables `ufw` and prepares `/var/www/pde`.
@@ -69,7 +69,7 @@ Vercel can host the app **and** the relay. The `vercel.json` in `apps/capture-pw
    By default this sends each signed-in user's data to **their own vault**, `z:<their tid>:doc-intake`, which they register under their own DID with the starter kit (`starter/`, driven from Claude Code chat). It needs no key and no deployment of ours.
 
    For the older shared setup, where everyone's data goes to one contract you deploy, run `read -s T3N_API_KEY && export T3N_API_KEY && pnpm contract:build && pnpm t3:deploy`, then `PDE_FIXED_CONTRACT=1 pnpm t3:config`. Whoever holds that deploying key can read all submissions (see `tools/t3/README.md` → Storage).
-2. Vercel → New Project → import `Terminal-3/private-doc-scanner` (or your fork):
+2. Vercel → New Project → import `wardumb-t3/private-doc-scanner` (or your fork):
    - **Root Directory:** `apps/capture-pwa`. Keep "Include files outside the root directory" on.
    - **Environment variables** (Production and Preview):
      - `ENABLE_EXPERIMENTAL_COREPACK=1`
