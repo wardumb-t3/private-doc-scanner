@@ -26,32 +26,106 @@ Scanning doesn't need an account. Saving to your vault needs a Terminal 3 accoun
    - **Claude Code or Codex on your computer:** the setup prompt creates `starter/.env` (git-ignored) with an empty `T3N_API_KEY=` line. Open it in your editor, paste the key after the `=`, save, and tell your assistant "done".
    - **Claude Code on the web or Codex cloud:** add `T3N_API_KEY` in the environment's secret or environment-variable settings, allow the host `cn-api.sg.testnet.t3n.terminal3.io` in its network settings, and start a new session.
 
-### Setup prompt (Claude Code)
+### Prompts for your AI
+
+These assume your assistant remembers nothing from earlier sessions (Claude Code on the web starts
+each session in a fresh container), so each one carries everything it needs. They work in Claude Code
+and Codex.
+
+**1. First-time setup**
 
 ```text
-Set me up with Private Doc Scanner and Terminal 3 (T3N) so my private documents stay out of AI chats
-and I can use them in my own workflows. Run the commands yourself.
+I'm using the open-source Private Doc Scanner with Terminal 3 (T3N): it reads my documents on my phone
+and seals the details to my own T3N vault, so AI can use them without seeing them. Set me up.
+Run the commands yourself; don't ask me to run anything.
 
-Ground rules, now and in future sessions:
-- My T3N API key goes in the environment as T3N_API_KEY or in starter/.env (git-ignored). Never ask me to
-  paste it into the chat, never print it, never put it in code, git or memory.
-- Private documents go through the scanner link only; never ask me to upload or paste them.
+Ground rules for this whole session:
+- My T3N API key is in the environment as T3N_API_KEY, or in starter/.env (git-ignored). Never print it,
+  ask me for it in the chat, or write it into code, git or memory.
+- Never run starter/scripts/read-my-data.ts or anything else that shows my stored values.
+- Never ask me to paste, upload or describe my documents. Documents go through the scanner link only.
 
-Steps:
-1. Check Node.js 22+.
-2. Clone https://github.com/wardumb-t3/private-doc-scanner into ~/t3n-workspace, then run npm install
-   in its starter/ folder.
-3. API key: if T3N_API_KEY isn't set in the environment, copy starter/.env.example to starter/.env
-   (it's git-ignored) and stop. Tell me to sign up at https://terminal3.io/products/agent-developer-kit
-   if I don't have a key yet (with the same email I'll use in the scanner), then to paste the key into
-   starter/.env in my editor and say "done". Never open, read or print that file's value.
-4. In starter/, run npx tsx scripts/setup-vault.ts. Show me my did:t3n and my vault name.
-5. Run npx tsx scripts/new-link.ts <the document types I want> and give me the link to open on my phone.
-6. Draft a "Terminal 3 (T3N)" section for ~/.claude/CLAUDE.md (use T3N for private data; workspace path;
-   key from starter/.env or the environment only; my DID and vault; the new-link and vault
-   status/evaluate commands), show it to me, and save it only after I say yes. Copy the repo's
-   .claude/skills into ~/.claude/skills.
-7. Ask me what I want to build first.
+Before anything else:
+a. If ~/t3n-workspace/private-doc-scanner doesn't exist, clone https://github.com/wardumb-t3/private-doc-scanner there
+   (shallow is fine), then run npm install in its starter/ folder. Check Node.js is 22 or newer.
+b. Check whether T3N_API_KEY is set in the environment or in starter/.env; tell me only "set" or "not set".
+   If it's not set: copy starter/.env.example to starter/.env and stop. Tell me to paste my key after
+   T3N_API_KEY= in my editor (or, on Claude Code on the web, add it in the environment's settings and start a
+   new session). If I have no key, tell me to sign up at https://terminal3.io/products/agent-developer-kit
+   with the email I'll use in the scanner. Never open or print the file's value.
+c. Check that cn-api.sg.testnet.t3n.terminal3.io is reachable. If it isn't, stop and tell me to allow
+   that host in my environment's network settings, then start a new session.
+
+Then:
+1. In starter/, run npx tsx scripts/setup-vault.ts. It's safe to re-run. Tell me my did:t3n, my vault
+   name, and that the first setup costs about 1,100 test credits.
+2. Ask me which documents I want to store (passport, id_card, payslip, bank_statement, generic), then run
+   npx tsx scripts/new-link.ts <those types> and give me the link to open on my phone.
+3. Tell me to sign in on the scanner with the same email as my Terminal 3 account, and that the scanner's
+   last screen gives me a prompt to paste back here to check the result.
+```
+
+**2. Store another document**
+
+```text
+I'm using the open-source Private Doc Scanner with Terminal 3 (T3N). I want to store <passport / payslip /
+bank_statement / id_card> in my own T3N vault without it entering this chat. Run the commands yourself.
+
+Ground rules for this whole session:
+- My T3N API key is in the environment as T3N_API_KEY, or in starter/.env (git-ignored). Never print it,
+  ask me for it in the chat, or write it into code, git or memory.
+- Never run starter/scripts/read-my-data.ts or anything else that shows my stored values.
+- Never ask me to paste, upload or describe my documents. Documents go through the scanner link only.
+
+Before anything else:
+a. If ~/t3n-workspace/private-doc-scanner doesn't exist, clone https://github.com/wardumb-t3/private-doc-scanner there
+   (shallow is fine), then run npm install in its starter/ folder. Check Node.js is 22 or newer.
+b. Check whether T3N_API_KEY is set in the environment or in starter/.env; tell me only "set" or "not set".
+   If it's not set: copy starter/.env.example to starter/.env and stop. Tell me to paste my key after
+   T3N_API_KEY= in my editor (or, on Claude Code on the web, add it in the environment's settings and start a
+   new session). If I have no key, tell me to sign up at https://terminal3.io/products/agent-developer-kit
+   with the email I'll use in the scanner. Never open or print the file's value.
+c. Check that cn-api.sg.testnet.t3n.terminal3.io is reachable. If it isn't, stop and tell me to allow
+   that host in my environment's network settings, then start a new session.
+
+Then, in starter/, run npx tsx scripts/new-link.ts <the types I named> and give me the link to open on
+my phone. Tell me to sign in with the same email as my Terminal 3 account, and that the scanner's last
+screen gives me a prompt to paste back here to check the result.
+```
+
+**3. Check what I sealed**
+
+The scanner's last screen gives you this prompt with your reference and the right checks filled in.
+To write it yourself:
+
+```text
+I'm using the open-source Private Doc Scanner with Terminal 3 (T3N). I sealed my <documents> to my own
+T3N vault under the reference <reference>. Check the result. Run the commands yourself.
+
+Ground rules for this whole session:
+- My T3N API key is in the environment as T3N_API_KEY, or in starter/.env (git-ignored). Never print it,
+  ask me for it in the chat, or write it into code, git or memory.
+- Never run starter/scripts/read-my-data.ts or anything else that shows my stored values.
+- Never ask me to paste, upload or describe my documents. Documents go through the scanner link only.
+
+Before anything else:
+a. If ~/t3n-workspace/private-doc-scanner doesn't exist, clone https://github.com/wardumb-t3/private-doc-scanner there
+   (shallow is fine), then run npm install in its starter/ folder. Check Node.js is 22 or newer.
+b. Check whether T3N_API_KEY is set in the environment or in starter/.env; tell me only "set" or "not set".
+   If it's not set: copy starter/.env.example to starter/.env and stop. Tell me to paste my key after
+   T3N_API_KEY= in my editor (or, on Claude Code on the web, add it in the environment's settings and start a
+   new session). If I have no key, tell me to sign up at https://terminal3.io/products/agent-developer-kit
+   with the email I'll use in the scanner. Never open or print the file's value.
+c. Check that cn-api.sg.testnet.t3n.terminal3.io is reachable. If it isn't, stop and tell me to allow
+   that host in my environment's network settings, then start a new session.
+
+Then, in starter/:
+1. Run npx tsx scripts/vault.ts status <reference>
+2. Run npx tsx scripts/vault.ts evaluate <reference> '<checks, e.g. {"document_not_expired":true,"min_age":18}>'
+   Checks: min_net_pay, min_age, document_not_expired, nationality_in, min_closing_balance,
+   require_verified.
+3. Tell me in plain words which fields arrived, which were verified on the document and which I edited,
+   and whether each check passed. Don't show any values.
 ```
 
 **Or install it as a Claude Code plugin**, which adds the skills to every project:
@@ -62,7 +136,7 @@ Steps:
 
 Then ask Claude "set up my private vault" or "store my passport privately".
 
-For Codex, use the same prompt and save the memory section to `~/.codex/AGENTS.md`. The repo's own [`CLAUDE.md`](CLAUDE.md), [`AGENTS.md`](AGENTS.md) and [skills](.claude/skills) tell coding agents how to use it.
+The same prompts work in Codex. The repo's own [`CLAUDE.md`](CLAUDE.md), [`AGENTS.md`](AGENTS.md) and [skills](.claude/skills) tell coding agents how to use it.
 
 ## FAQ
 

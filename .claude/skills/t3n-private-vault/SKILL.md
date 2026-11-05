@@ -49,7 +49,8 @@ cost (about 1,100 test credits, from their account).
    - Open it on your phone. The documents are read on the device; you check the details.
    - At "Seal and send", sign in with **the same email as your T3N account** and the code it
      emails you. The screen shows "Saving to the vault of did:t3n:…"; it should be your DID.
-   - Say "done" here when you see the confirmation.
+   - Their last screen shows a ready-made prompt with the reference; they paste it back here
+     (or in any new session) to check the result.
 4. Remember the `request_id`. Stop and wait.
 
 ## 3. "done" / "check it" / "would I pass …?"

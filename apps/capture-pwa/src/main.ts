@@ -91,6 +91,9 @@ async function ensureCurrentBuild(): Promise<boolean> {
   return false;
 }
 
+/** The testnet node a coding session must be allowed to reach (the scanner itself goes through /t3). */
+const T3N_NODE_HOST = "cn-api.sg.testnet.t3n.terminal3.io";
+
 /** Shown in the footer, so anyone can see which configuration this deployment runs. */
 function modeLabel(d: DestinationConfig): string {
   if (d.type === "dry-run") return "demo mode: nothing is sent";
@@ -158,6 +161,10 @@ async function boot() {
     monitor,
     build: { version: __PDE_BUILD__.version, sha: __PDE_BUILD__.sha, repoUrl: config.repoUrl },
     modeLabel: modeLabel(config.destination),
+    // After sealing, a prompt that lets any fresh AI session check the submission.
+    ...(config.destination.type === "t3n" || (config.destination.type === "dry-run" && config.destination.showAssistantPrompt)
+      ? { assistantPrompt: { repoUrl: config.repoUrl, nodeHost: T3N_NODE_HOST, signUpUrl: SIGN_UP_URL } }
+      : {}),
     // Sealing needs a Terminal 3 account; demo mode doesn't (unless it's simulating that check).
     ...(config.destination.type === "t3n" || (config.destination.type === "dry-run" && config.destination.simulateNoDeveloperAccount)
       ? { signUpUrl: SIGN_UP_URL }

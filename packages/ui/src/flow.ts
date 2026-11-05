@@ -10,6 +10,7 @@ import {
 } from "@pde/core";
 import { LitElement, css, html, nothing } from "lit";
 import "./capture.ts";
+import { assistantPrompt, type AssistantPromptContext } from "./assistant-prompt.ts";
 import { DOC_LABELS } from "./labels.ts";
 import type { NetworkEntry, NetworkMonitor } from "./network-monitor.ts";
 import "./network-panel.ts";
@@ -39,6 +40,8 @@ export interface FlowConfig {
   modeLabel?: string;
   /** Where to create a Terminal 3 account, linked when sign-in finds no account. */
   signUpUrl?: string;
+  /** When set, the done page offers a self-contained prompt to check the submission from any AI session. */
+  assistantPrompt?: AssistantPromptContext;
   /** Link to continue on a phone (same request id). */
   handoffUrl?: string;
   /** How the recipient is named in the privacy label. */
@@ -88,6 +91,7 @@ export class PdeFlow extends LitElement {
     retryable: { state: true },
     sealReady: { state: true },
     needsAccount: { state: true },
+    promptCopied: { state: true },
     setupNeeded: { state: true },
     settingUp: { state: true },
     setupStep: { state: true },
@@ -115,6 +119,9 @@ export class PdeFlow extends LitElement {
   sealReady = false;
   /** Signed in, but not with a Terminal 3 developer account. */
   needsAccount = false;
+  /** Document types in the sealed submission (kept after the results are wiped). */
+  private sealedTypes: DocType[] = [];
+  promptCopied = false;
   /** Signed in, but the destination (the user's own vault) must be set up first. */
   setupNeeded = false;
   settingUp = false;
@@ -222,6 +229,26 @@ export class PdeFlow extends LitElement {
       .done-card {
         text-align: center;
         padding: 24px 8px;
+      }
+      .ai-prompt {
+        text-align: left;
+        margin-top: 24px;
+        padding: 16px;
+        border: 1px solid var(--pde-border);
+        border-radius: var(--pde-radius);
+        background: var(--pde-surface);
+      }
+      .ai-prompt h3 {
+        margin: 0 0 6px;
+      }
+      .ai-prompt pre {
+        margin: 12px 0 0;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-size: 12px;
+        line-height: 1.5;
+        max-height: 320px;
+        overflow: auto;
       }
       .ref {
         font-size: 15px;
@@ -359,6 +386,7 @@ export class PdeFlow extends LitElement {
                 Your reference: <code>${this.requestId}</code><br />
                 <span class="muted">Reference this in your chat so the AI can reference your documents. They would not be able to see it.</span>
               </p>`}
+          ${this.config.assistantPrompt ? this.renderAssistantPrompt(this.config.assistantPrompt) : nothing}
         </div>`;
       case "error":
         return html`<div class="notice error" role="alert">${this.error}</div>
@@ -471,6 +499,28 @@ export class PdeFlow extends LitElement {
     if (s?.result) releaseResult(s.result);
     this.slots = this.slots.filter((x) => x.id !== id);
     if (!this.collected.length) this.step = "home";
+  }
+
+  private renderAssistantPrompt(ctx: AssistantPromptContext) {
+    const text = assistantPrompt(this.requestId, this.sealedTypes, ctx);
+    const copy = async (e: Event) => {
+      const pre = (e.currentTarget as HTMLElement).closest(".ai-prompt")?.querySelector("pre");
+      try {
+        await navigator.clipboard.writeText(text);
+        this.promptCopied = true;
+      } catch {
+        // Clipboard refused: select the text so the user can copy it.
+        if (pre) getSelection()?.selectAllChildren(pre);
+      }
+    };
+    return html`<div class="ai-prompt" data-testid="ai-prompt">
+      <h3>Check it with your AI</h3>
+      <p class="muted">
+        Paste this into a new chat in Claude Code or Codex. It has everything a fresh session needs, and none of your details.
+      </p>
+      <button class="primary" @click=${copy} data-testid="copy-ai-prompt">${this.promptCopied ? "Copied" : "Copy prompt"}</button>
+      <pre>${text}</pre>
+    </div>`;
   }
 
   private renderVerify() {
@@ -639,8 +689,10 @@ export class PdeFlow extends LitElement {
     this.sending = true;
     this.status = "Sealing on your device…";
     try {
-      const receipt = await this.config.destination.submit(this.submission());
+      const submission = this.submission();
+      const receipt = await this.config.destination.submit(submission);
       this.reference = receipt.reference;
+      this.sealedTypes = submission.documents.map((d) => d.doc_type);
       this.wipe();
       this.status = "Sent";
       this.step = "done";

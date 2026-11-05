@@ -255,3 +255,21 @@ test("without a Terminal 3 account: blocked at sealing with a sign-up link, then
   await flow(page).getByTestId("seal").click();
   await expect(flow(page).getByTestId("done")).toBeVisible();
 });
+
+test("the done page hands back a prompt any fresh AI session can use to check the submission", async ({ page }) => {
+  await page.route("**/pde.config.json", (route) =>
+    route.fulfill({ json: { destination: { type: "dry-run", showAssistantPrompt: true }, defaultDocTypes: ["payslip"], repoUrl: "https://github.com/Terminal-3/private-doc-scanner" } }),
+  );
+  await page.goto("./?req=req_prompt_01&types=payslip");
+  await choose(page, "payslip");
+  const truth = await readPayslip(page);
+  await flow(page).getByTestId("review-continue").click();
+  await flow(page).getByTestId("to-seal").click();
+  await flow(page).getByTestId("seal").click();
+  const prompt = flow(page).getByTestId("ai-prompt");
+  await expect(prompt).toContainText("I just scanned my payslip");
+  await expect(prompt).toContainText("npx tsx scripts/vault.ts status req_prompt_01");
+  await expect(prompt).toContainText("clone https://github.com/Terminal-3/private-doc-scanner");
+  // The prompt carries the reference and document types, never the values.
+  for (const value of [truth.net_pay, truth.employee_name, truth.employer_name]) await expect(prompt).not.toContainText(value);
+});

@@ -10,7 +10,7 @@ export type DestinationConfig =
    * vault" step once. `simulateNoDeveloperAccount`: the first sign-in isn't a
    * developer account (as for an email that never signed up).
    */
-  | { type: "dry-run"; simulateVaultSetup?: boolean; simulateNoDeveloperAccount?: boolean }
+  | { type: "dry-run"; simulateVaultSetup?: boolean; simulateNoDeveloperAccount?: boolean; showAssistantPrompt?: boolean }
   | { type: "hpke"; endpoint: string; recipientPublicKey: string; keyId: string; label?: string }
   | {
       type: "t3n";
