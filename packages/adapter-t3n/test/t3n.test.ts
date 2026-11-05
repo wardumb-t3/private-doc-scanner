@@ -74,6 +74,7 @@ function fakeSdk(
         record("mapCreate", input);
       },
       update: async (tail: string, patch: unknown) => record("mapUpdate", { tail, patch }),
+      entrySet: async (tail: string, key: string, value: string) => record("entrySet", { tail, key, value }),
     };
   }
   const sdk = {
@@ -229,6 +230,8 @@ describe("T3 destination: the signed-in user's own vault", () => {
       { tail: "config", visibility: "private", ...acl },
     ]);
     expect(steps).toContain("registering your vault");
+    // The id is kept in the vault's own config map, so the owner can read it back for add-on contracts.
+    expect(calls.entrySet).toEqual([{ tail: "config", key: "contract_id", value: "77" }]);
   });
 
   it("re-grants a map left over from an earlier attempt to the new contract", async () => {

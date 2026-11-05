@@ -156,6 +156,15 @@ export class T3nDestination implements Destination {
         await tenant.maps.update(tail, acl);
       }
     }
+    // T3N returns the numeric id only from register(). Keep it in the vault's own private config
+    // map, so the owner can read it back later (the starter's setup-vault does) for add-on contracts
+    // that need to be granted read access. Not fatal: the vault works without it.
+    if (vault.maps.includes("config")) {
+      onStep?.("recording your vault's id");
+      await tenant.maps.entrySet("config", "contract_id", String(reg.contract_id)).catch((err: unknown) => {
+        console.warn("[t3] couldn't record the vault's contract id:", (err as Error).message);
+      });
+    }
   }
 
   /** Throws NoDeveloperAccountError unless the signed-in DID is an active Terminal 3 developer account. */
