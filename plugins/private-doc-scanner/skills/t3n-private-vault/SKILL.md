@@ -33,6 +33,8 @@ status and rule results, never values, images or files.
    - no key yet: they sign up at https://terminal3.io/products/agent-developer-kit, using the email
      they'll use in the scanner.
    Never ask them to paste it in chat.
+   Whenever you ask them to start a new session, end your message with the full prompt in
+   `<repo>/starter/prompts/continue.txt`, word for word, so the new session can carry on without memory.
 2. All commands below run from `<repo>/starter`. Install once there: `cd <repo>/starter && npm install`.
 
 ## 1. "Set up my vault"

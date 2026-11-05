@@ -22,6 +22,10 @@ Never read or print the file's value.
    `npx tsx scripts/vault.ts evaluate <request_id> '<rules json>'`. Rules: `min_net_pay`, `min_age`,
    `document_not_expired`, `nationality_in`, `min_closing_balance`, `require_verified`.
 
+Whenever you ask the user to start a new session (after they add their key or allow the T3N host), end
+your message with the full prompt in `starter/prompts/continue.txt`, word for word, so the new session can
+carry on without memory. The scripts also print it with those errors.
+
 Never:
 - ask the user to upload, paste or describe a document or its values;
 - ask for, print or store `T3N_API_KEY` (it's in the environment);

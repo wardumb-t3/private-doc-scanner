@@ -24,7 +24,7 @@ Scanning doesn't need an account. Saving to your vault needs a Terminal 3 accoun
 2. **Save the key somewhere safe** straight away, such as a password manager. It's shown once.
 3. **Give it to your assistant without pasting it into the chat:**
    - **Claude Code or Codex on your computer:** the setup prompt creates `starter/.env` (git-ignored) with an empty `T3N_API_KEY=` line. Open it in your editor, paste the key after the `=`, save, and tell your assistant "done".
-   - **Claude Code on the web or Codex cloud:** add `T3N_API_KEY` in the environment's secret or environment-variable settings, allow the host `cn-api.sg.testnet.t3n.terminal3.io` in its network settings, and start a new session.
+   - **Claude Code on the web or Codex cloud:** add `T3N_API_KEY` in the environment's secret or environment-variable settings, allow the host `cn-api.sg.testnet.t3n.terminal3.io` in its network settings, and start a new session. Your assistant gives you a prompt to paste there, so the new session can carry on without remembering anything (it's also in [`starter/prompts/continue.txt`](starter/prompts/continue.txt)).
 
 ### Prompts for your AI
 
@@ -55,6 +55,8 @@ b. Check whether T3N_API_KEY is set in the environment or in starter/.env; tell 
    with the email I'll use in the scanner. Never open or print the file's value.
 c. Check that cn-api.sg.testnet.t3n.terminal3.io is reachable. If it isn't, stop and tell me to allow
    that host in my environment's network settings, then start a new session.
+   Whenever you stop and ask me to start a new session, end your message with the full prompt in
+   starter/prompts/continue.txt (print it with cat), word for word, so I can paste it into the new session.
 
 Then:
 1. In starter/, run npx tsx scripts/setup-vault.ts. It's safe to re-run. Tell me my did:t3n, my vault
@@ -87,6 +89,8 @@ b. Check whether T3N_API_KEY is set in the environment or in starter/.env; tell 
    with the email I'll use in the scanner. Never open or print the file's value.
 c. Check that cn-api.sg.testnet.t3n.terminal3.io is reachable. If it isn't, stop and tell me to allow
    that host in my environment's network settings, then start a new session.
+   Whenever you stop and ask me to start a new session, end your message with the full prompt in
+   starter/prompts/continue.txt (print it with cat), word for word, so I can paste it into the new session.
 
 Then, in starter/, run npx tsx scripts/new-link.ts <the types I named> and give me the link to open on
 my phone. Tell me to sign in with the same email as my Terminal 3 account, and that the scanner's last
@@ -118,6 +122,8 @@ b. Check whether T3N_API_KEY is set in the environment or in starter/.env; tell 
    with the email I'll use in the scanner. Never open or print the file's value.
 c. Check that cn-api.sg.testnet.t3n.terminal3.io is reachable. If it isn't, stop and tell me to allow
    that host in my environment's network settings, then start a new session.
+   Whenever you stop and ask me to start a new session, end your message with the full prompt in
+   starter/prompts/continue.txt (print it with cat), word for word, so I can paste it into the new session.
 
 Then, in starter/:
 1. Run npx tsx scripts/vault.ts status <reference>
