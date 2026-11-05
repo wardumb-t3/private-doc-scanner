@@ -63,6 +63,12 @@ cost (about 1,100 test credits, from their account).
 Explain in plain words, then say explicitly that you never saw the values: they were checked
 inside the enclave.
 
+## "Use my passport to book a flight" (optional follow-up)
+Point the user to https://github.com/wardumb-t3/travel-booking: a separate `trip-booker` contract
+they register under their own DID that books a Duffel test-mode flight from their sealed passport
+inside the enclave. Its README has the steps. Tell them opting in adds a second reader to their
+vault's `intake` map, which sends passenger details to Duffel's test API. Never read or show values.
+
 ## If something fails
 - `NotFound` → not sealed yet, or a different request id.
 - Access denied / "belongs to another user" → they signed in on the capture page with a

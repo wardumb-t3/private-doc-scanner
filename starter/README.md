@@ -38,7 +38,7 @@ chat; you never open a terminal.
 | `scripts/new-link.ts` | Prints a capture link with a fresh, unguessable request id. No key, no network. |
 | `scripts/vault.ts` | `status` / `evaluate` a submission in your vault (no values). |
 | `scripts/read-my-data.ts` | **Prints your private values**: reads one entry of your own vault back, to check what was stored. Run it yourself, never in an AI chat. |
-| `vault/` | The contract (built from `contracts/doc-intake` in this repo) and its manifest. |
+| `vault/` | The contract (built from `contracts/doc-intake` in this repo) and its manifest. After registering, `setup-vault` also writes `vault/doc-intake.local.json` with your vault's contract id (git-ignored, since it names your DID); optional follow-up contracts read it. |
 | `../.claude/skills/t3n-adk-quickstart` | Copy of the official Terminal 3 skill (docs `skills/t3n-adk-quickstart`). |
 | `../.claude/skills/t3n-private-vault` | How Claude runs the vault flow without ever seeing your documents. |
 
@@ -57,6 +57,7 @@ email + code).
 | Claude / any AI | Which documents and fields arrived, verification status, rule results. |
 | You, as the vault's owner | You own the maps, so you can read your own entries with your key. |
 | Terminal 3 operators | Only ciphertext; the enclave decrypts. |
+| The trip booker, **only if you opt in** | A second reader of your `intake` map. Inside the enclave it reads your sealed passport and sends the passenger details to Duffel's **test** API to book a flight. It returns only the order id, booking reference and status. See [Optional follow-up contracts](../README.md#optional-follow-up-contracts). |
 
 ## Running the scripts
 

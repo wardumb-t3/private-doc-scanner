@@ -12,3 +12,4 @@ contracts/*/target/
 tools/t3/out/
 deploy/out/
 .env
+starter/vault/*.local.json

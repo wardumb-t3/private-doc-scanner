@@ -138,6 +138,28 @@ Then ask Claude "set up my private vault" or "store my passport privately".
 
 The same prompts work in Codex. The repo's own [`CLAUDE.md`](CLAUDE.md), [`AGENTS.md`](AGENTS.md) and [skills](.claude/skills) tell coding agents how to use it.
 
+## Optional follow-up contracts
+
+Other contracts can put your sealed data to work inside the enclave. They are separate projects you opt
+into; the scanner doesn't bundle them.
+
+### Book a flight with your sealed passport
+
+[`travel-booking`](https://github.com/wardumb-t3/travel-booking) adds a `trip-booker` contract that you register under your own DID,
+next to your vault. It books a flight on Duffel (**test mode only**) using your sealed passport, which
+never leaves the enclave. You get back only the order id, booking reference and status. Its README has
+the setup steps: build the contract, then `npx tsx scripts/trip.ts setup`,
+`npx tsx scripts/grant-vault-read.ts ../private-doc-scanner`, then `search` and `book`.
+
+- **What changes when you opt in:** your vault's `intake` map gets a **second reader**, the trip booker,
+  and that reader sends the passenger details from your passport to Duffel's test API. Nothing else
+  gains access. Re-running `setup-vault` resets `intake` to the vault alone, so re-run the trip booker's
+  grant afterwards.
+- **What it needs:** your vault's contract id, which `setup-vault` records in
+  `starter/vault/doc-intake.local.json` when it registers the vault. Vaults set up before that have no
+  id file: bump `version` in `starter/vault/manifest.json` and re-run `setup-vault`. It re-registers the
+  same contract file (same hash) and keeps your sealed data.
+
 ## FAQ
 
 ### How do I use my passport, payslip or bank statement with AI without uploading it?
