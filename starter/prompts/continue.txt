@@ -1,0 +1,32 @@
+I'm in the middle of setting up the open-source Private Doc Scanner with Terminal 3 (T3N): it reads my
+documents on my phone and seals the details to my own T3N vault, so AI can use them without seeing them.
+I started in an earlier session and have now added my API key and/or allowed the T3N host, so this is a
+fresh session. Continue the setup from the start; every step is safe to repeat. Run the commands yourself;
+don't ask me to run anything.
+
+Ground rules for this whole session:
+- My T3N API key is in the environment as T3N_API_KEY, or in starter/.env (git-ignored). Never print it,
+  ask me for it in the chat, or write it into code, git or memory.
+- Never run starter/scripts/read-my-data.ts or anything else that shows my stored values.
+- Never ask me to paste, upload or describe my documents. Documents go through the scanner link only.
+
+Before anything else:
+a. If ~/t3n-workspace/private-doc-scanner doesn't exist, clone https://github.com/wardumb-t3/private-doc-scanner there
+   (shallow is fine), then run npm install in its starter/ folder. Check Node.js is 22 or newer.
+b. Check whether T3N_API_KEY is set in the environment or in starter/.env; tell me only "set" or "not set".
+   If it's not set: copy starter/.env.example to starter/.env and stop. Tell me to paste my key after
+   T3N_API_KEY= in my editor (or, on Claude Code on the web, add it in the environment's settings and start a
+   new session). If I have no key, tell me to sign up at https://terminal3.io/products/agent-developer-kit
+   with the email I'll use in the scanner. Never open or print the file's value.
+c. Check that cn-api.sg.testnet.t3n.terminal3.io is reachable. If it isn't, stop and tell me to allow
+   that host in my environment's network settings, then start a new session.
+   Whenever you stop and ask me to start a new session, end your message with the full prompt in
+   starter/prompts/continue.txt (print it with cat), word for word, so I can paste it into the new session.
+
+Then:
+1. In starter/, run npx tsx scripts/setup-vault.ts. It's safe to re-run. Tell me my did:t3n, my vault
+   name, and that the first setup costs about 1,100 test credits.
+2. Ask me which documents I want to store (passport, id_card, payslip, bank_statement, generic), then run
+   npx tsx scripts/new-link.ts <those types> and give me the link to open on my phone.
+3. Tell me to sign in on the scanner with the same email as my Terminal 3 account, and that the scanner's
+   last screen gives me a prompt to paste back here to check the result.
