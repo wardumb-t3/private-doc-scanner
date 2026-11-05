@@ -138,6 +138,15 @@ Then ask Claude "set up my private vault" or "store my passport privately".
 
 The same prompts work in Codex. The repo's own [`CLAUDE.md`](CLAUDE.md), [`AGENTS.md`](AGENTS.md) and [skills](.claude/skills) tell coding agents how to use it.
 
+## Next: book a flight with your sealed passport
+
+Congratulations on sealing your passport in your vault! You can also clone a separate contract that lets
+your AI agent book flights for you without it ever seeing your passport details.
+[Learn more](https://github.com/wardumb-t3/travel-booking).
+
+> **Note:** using it allows your passport details to be sent to the travel booking service you choose
+> (not to the AI agent).
+
 ## FAQ
 
 ### How do I use my passport, payslip or bank statement with AI without uploading it?

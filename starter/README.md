@@ -38,7 +38,7 @@ chat; you never open a terminal.
 | `scripts/new-link.ts` | Prints a capture link with a fresh, unguessable request id. No key, no network. |
 | `scripts/vault.ts` | `status` / `evaluate` a submission in your vault (no values). |
 | `scripts/read-my-data.ts` | **Prints your private values**: reads one entry of your own vault back, to check what was stored. Run it yourself, never in an AI chat. |
-| `vault/` | The contract (built from `contracts/doc-intake` in this repo) and its manifest. |
+| `vault/` | The contract (built from `contracts/doc-intake` in this repo) and its manifest. `setup-vault` also records your vault's contract id in `vault/doc-intake.local.json` (git-ignored), for add-on contracts. |
 | `../.claude/skills/t3n-adk-quickstart` | Copy of the official Terminal 3 skill (docs `skills/t3n-adk-quickstart`). |
 | `../.claude/skills/t3n-private-vault` | How Claude runs the vault flow without ever seeing your documents. |
 
@@ -57,6 +57,7 @@ email + code).
 | Claude / any AI | Which documents and fields arrived, verification status, rule results. |
 | You, as the vault's owner | You own the maps, so you can read your own entries with your key. |
 | Terminal 3 operators | Only ciphertext; the enclave decrypts. |
+| A travel booking contract, **only if you add one** | Your passport details are sent to the booking service you choose, not to the AI agent. See [Next: book a flight](../README.md#next-book-a-flight-with-your-sealed-passport). |
 
 ## Running the scripts
 

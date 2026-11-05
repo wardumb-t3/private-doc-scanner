@@ -8,7 +8,7 @@
  * Cost on testnet: about 1,000 credits to register + 50 per map, from your account.
  */
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { fail, NODE_URL, onFailure, sdk, signIn } from "./t3n.ts";
 
 process.on("unhandledRejection", onFailure);
@@ -43,6 +43,13 @@ if (registered === manifest.version && (await mapsPresent())) {
 } else {
   const reg = await tenant.contracts.register({ tail: manifest.tail, version: manifest.version, wasm });
   console.log(`✓ registered ${reg.name} v${manifest.version} (contract id ${reg.contract_id})`);
+  // T3N returns the numeric id only here, and follow-up contracts (e.g. the trip booker) need it to
+  // grant themselves read access to `intake`. Git-ignored: it names the user's DID.
+  await writeFile(
+    new URL("../vault/doc-intake.local.json", import.meta.url),
+    JSON.stringify({ name: reg.name, version: manifest.version, contract_id: reg.contract_id }, null, 2) + "\n",
+  );
+  console.log("✓ recorded the contract id in vault/doc-intake.local.json (for optional follow-up contracts)");
   // Private maps: only this contract may read or write them.
   const acl = { writers: { only: [reg.contract_id] }, readers: { only: [reg.contract_id] } };
   for (const tail of manifest.maps) {

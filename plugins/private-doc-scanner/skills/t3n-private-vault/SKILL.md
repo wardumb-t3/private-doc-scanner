@@ -63,6 +63,11 @@ cost (about 1,100 test credits, from their account).
 Explain in plain words, then say explicitly that you never saw the values: they were checked
 inside the enclave.
 
+## "Use my passport to book a flight" (optional)
+Point the user to https://github.com/wardumb-t3/travel-booking, a separate contract that lets an agent
+book flights without seeing their passport details. Tell them it sends their passport details to the
+booking service they choose (not to the AI agent). Never read or show values.
+
 ## If something fails
 - `NotFound` → not sealed yet, or a different request id.
 - Access denied / "belongs to another user" → they signed in on the capture page with a
